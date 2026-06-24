@@ -66,6 +66,26 @@ describe("0G-Mem API", () => {
       expect(memoryResponse.status).toBe(201);
       expect(memory.memory.agentId).toBe("agent");
 
+      const allMemoryResponse = await fetch(`${baseUrl}/v1/memory?limit=20`, {
+        headers: { Authorization: `Bearer ${firstKey}` }
+      });
+      const allMemory = (await allMemoryResponse.json()) as {
+        memories: Array<{ agentId: string; title: string }>;
+      };
+      expect(allMemoryResponse.status).toBe(200);
+      expect(allMemory.memories).toEqual([
+        expect.objectContaining({ agentId: "agent", title: "Policy" })
+      ]);
+
+      const isolatedMemoryResponse = await fetch(`${baseUrl}/v1/memory?limit=20`, {
+        headers: { Authorization: `Bearer ${secondKey}` }
+      });
+      const isolatedMemory = (await isolatedMemoryResponse.json()) as {
+        memories: Array<{ agentId: string; title: string }>;
+      };
+      expect(isolatedMemoryResponse.status).toBe(200);
+      expect(isolatedMemory.memories).toEqual([]);
+
       const firstProfileResponse = await fetch(
         `${baseUrl}/v1/profile?agentId=agent&query=Policy`,
         { headers: { Authorization: `Bearer ${firstKey}` } }

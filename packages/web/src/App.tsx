@@ -1124,18 +1124,16 @@ function Dashboard({
     let cancelled = false;
     async function loadApiMemories() {
       try {
-        const responses = await Promise.all(
-          agentOptions.map(async (agent) => {
-            const r = await fetch(`${apiBaseUrl}/memory?agentId=${encodeURIComponent(agent.id)}&limit=20`, {
-              credentials: "include"
-            });
-            if (!r.ok) return [];
-            const p = await r.json();
-            return Array.isArray(p.memories) ? p.memories : [];
-          })
-        );
+        const r = await fetch(`${apiBaseUrl}/memory?limit=100`, {
+          credentials: "include"
+        });
+        if (!r.ok) return;
+        const p = await r.json();
         if (cancelled) return;
-        const apiMems = responses.flat().filter(isApiMemoryRecord).map((m, i) => mapApiMemory(m, i));
+        const rawMemories: unknown[] = Array.isArray(p.memories) ? p.memories : [];
+        const apiMems = rawMemories
+          .filter(isApiMemoryRecord)
+          .map((memory, index) => mapApiMemory(memory, index));
         setMemories(apiMems);
         setSelectedId((current) => {
           if (current && apiMems.some((memory) => memory.id === current)) return current;
@@ -2067,11 +2065,18 @@ function mapApiMemory(memory: ApiMemoryRecord, index: number): MemoryNode {
   const agent = agentOptions.find((x) => x.id === memory.agentId);
   const agentName = typeof content.agentName === "string" ? content.agentName : agent?.name ?? memory.agentId;
   const source = isMemorySource(content.source) ? content.source : "API";
-  const detail = typeof content.note === "string" ? content.note : typeof content.detail === "string" ? content.detail : "Persisted memory loaded from the 0G/MEM API.";
+  const detail = typeof content.note === "string"
+    ? content.note
+    : typeof content.detail === "string"
+      ? content.detail
+      : typeof content.summary === "string"
+        ? content.summary
+        : "Persisted memory loaded from the 0G/MEM API.";
   const pos = nextBubblePosition(index);
   return {
     id: memory.id, kind: memory.kind, title: memory.title, detail, agentId: memory.agentId, agentName, source,
-    from: source === "Manual" ? "POST /memory" : "GET /memory", age: memory.createdAt ? "synced" : "saved",
+    from: source === "Manual" ? "POST /memory" : source === "MCP" ? "MCP / 0gmem_add_memory" : "GET /memory",
+    age: memory.createdAt ? "synced" : "saved",
     size: Math.min(138, Math.max(104, 96 + memory.title.length)), x: pos.x, y: pos.y, confidence: 90,
     tags: memory.tags?.length ? memory.tags.slice(0, 5) : [source.toLowerCase()], linked: [], status: "synced"
   };

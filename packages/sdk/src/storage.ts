@@ -13,6 +13,7 @@ export type MemorySearchInput = {
 export interface MemoryStorage {
   add(input: MemoryInput): Promise<MemoryRecord>;
   list(agentId: string): Promise<MemoryRecord[]>;
+  listAll(): Promise<MemoryRecord[]>;
   search(input: MemorySearchInput): Promise<MemoryRecord[]>;
 }
 
@@ -31,6 +32,12 @@ export class InMemoryStorage implements MemoryStorage {
       .sort((left, right) =>
         (right.createdAt ?? "").localeCompare(left.createdAt ?? "")
       );
+  }
+
+  async listAll(): Promise<MemoryRecord[]> {
+    return [...this.memories.values()].sort((left, right) =>
+      (right.createdAt ?? "").localeCompare(left.createdAt ?? "")
+    );
   }
 
   async search(input: MemorySearchInput): Promise<MemoryRecord[]> {
@@ -73,6 +80,11 @@ export class JsonFileStorage extends InMemoryStorage {
   override async list(agentId: string): Promise<MemoryRecord[]> {
     await this.load();
     return super.list(agentId);
+  }
+
+  override async listAll(): Promise<MemoryRecord[]> {
+    await this.load();
+    return super.listAll();
   }
 
   override async search(input: MemorySearchInput): Promise<MemoryRecord[]> {

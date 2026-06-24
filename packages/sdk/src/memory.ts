@@ -13,6 +13,10 @@ export class MemoryClient {
     return this.storage.list(agentId);
   }
 
+  async listAll(): Promise<MemoryRecord[]> {
+    return this.storage.listAll();
+  }
+
   async search(input: {
     agentId: string;
     query?: string;

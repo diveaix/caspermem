@@ -201,7 +201,16 @@ async function routeRequest(
     const principal = await requirePrincipal(context, request);
     const agentId = url.searchParams.get("agentId");
     if (!agentId) {
-      sendJson(request, response, 400, { error: "agentId query param is required" });
+      const query = url.searchParams.get("query")?.toLowerCase().trim();
+      const limit = Number(url.searchParams.get("limit") ?? "100");
+      const prefix = `${principal.user.id}:`;
+      const memories = (await context.sdk.ogmem.memory.listAll())
+        .filter((memory) => memory.agentId.startsWith(prefix))
+        .filter((memory) => !query || memoryMatchesQuery(memory, query))
+        .slice(0, Number.isFinite(limit) && limit > 0 ? limit : 100);
+      sendJson(request, response, 200, {
+        memories: memories.map((memory) => unScopeMemoryRecord(principal, memory))
+      });
       return;
     }
 
@@ -382,6 +391,21 @@ function unScopeContext(principal: AuthPrincipal, context: ContextResult): Conte
     ...context,
     memories: context.memories.map((memory) => unScopeMemoryRecord(principal, memory))
   };
+}
+
+function memoryMatchesQuery(memory: MemoryRecord, query: string): boolean {
+  const haystack = [
+    memory.kind,
+    memory.title,
+    memory.tags.join(" "),
+    JSON.stringify(memory.content)
+  ]
+    .join(" ")
+    .toLowerCase();
+  return query
+    .split(/\s+/)
+    .filter((token) => token.length > 1)
+    .every((token) => haystack.includes(token));
 }
 
 async function readJson<T>(request: IncomingMessage): Promise<T> {
