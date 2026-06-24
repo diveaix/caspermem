@@ -1,0 +1,36 @@
+{
+  "name": "0g-mem",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @0g-mem/sdk && npm run build -w @0g-mem/api && npm run build -w @0g-mem/mcp && npm run build -w @0g-mem/web",
+    "test": "npm run test -w @0g-mem/sdk && npm run test -w @0g-mem/api",
+    "api:dev": "tsx packages/api/src/server.ts",
+    "api:smoke": "npm run build && tsx packages/api/examples/smoke.ts",
+    "contracts:deploy:aegis": "node contracts/deploy-aegis.mjs",
+    "mcp:dev": "tsx packages/mcp/src/server.ts",
+    "web:dev": "npm run dev -w @0g-mem/web",
+    "web:build": "npm run build -w @0g-mem/web",
+    "web:preview": "npm run preview -w @0g-mem/web",
+    "example:review": "tsx packages/sdk/examples/review-plan.ts",
+    "example:seed": "tsx packages/sdk/examples/seed-memory.ts",
+    "example:review-file": "tsx packages/sdk/examples/review-plan-file.ts packages/sdk/examples/fixtures/risky-plan.json",
+    "example:outcome": "tsx packages/sdk/examples/record-outcome.ts",
+    "example:flow": "tsx packages/sdk/examples/demo-flow.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.14",
+    "playwright": "^1.61.0",
+    "solc": "^0.8.28",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.9"
+  },
+  "dependencies": {
+    "ethers": "^6.17.0"
+  }
+}

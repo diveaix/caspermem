@@ -1,0 +1,16 @@
+{
+  "agentId": "trader-01",
+  "intent": "Approve USDC before depositing into a vault",
+  "txs": [
+    {
+      "chainId": 16602,
+      "to": "0x1111111111111111111111111111111111111111",
+      "data": "0x095ea7b30000000000000000000000002222222222222222222222222222222222222222ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "value": "0",
+      "label": "Unlimited USDC approval to unknown spender"
+    }
+  ],
+  "metadata": {
+    "source": "external-agent-client-demo"
+  }
+}

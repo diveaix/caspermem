@@ -1,0 +1,9 @@
+{
+  "agentId": "trader-01",
+  "txHashes": [
+    "0xabc0000000000000000000000000000000000000000000000000000000000000"
+  ],
+  "status": "failed",
+  "pnlUsd": -42,
+  "reason": "High slippage on route"
+}

@@ -1,0 +1,18 @@
+{
+  "agentId": "trader-01",
+  "kind": "strategy",
+  "title": "Conservative ETH/USDC Rebalance",
+  "content": {
+    "strategy": "Maintain ETH/USDC allocation without using unknown vaults or routers.",
+    "rebalanceThresholdPct": 5,
+    "maxSlippageBps": 75,
+    "allowedProtocols": [
+      "Uniswap",
+      "Aave"
+    ]
+  },
+  "tags": [
+    "demo",
+    "strategy"
+  ]
+}

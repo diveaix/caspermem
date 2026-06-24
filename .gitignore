@@ -1,0 +1,12 @@
+node_modules/
+dist/
+packages/*/dist/
+.env
+.env.*
+!.env.example
+npm-debug.log*
+coverage/
+.0g-mem/
+output/
+.agents/
+skills-lock.json

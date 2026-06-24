@@ -1,0 +1,55 @@
+{
+  "name": "@0g-mem/sdk",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./ogmem": {
+      "types": "./dist/ogmem.d.ts",
+      "import": "./dist/ogmem.js"
+    },
+    "./aegis": {
+      "types": "./dist/aegis.d.ts",
+      "import": "./dist/aegis.js"
+    },
+    "./compute": {
+      "types": "./dist/compute.d.ts",
+      "import": "./dist/compute.js"
+    },
+    "./storage": {
+      "types": "./dist/storage.d.ts",
+      "import": "./dist/storage.js"
+    },
+    "./storage-0g": {
+      "types": "./dist/storage-0g.d.ts",
+      "import": "./dist/storage-0g.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@0gfoundation/0g-storage-ts-sdk": "1.2.10",
+    "ethers": "^6.17.0"
+  },
+  "peerDependenciesMeta": {
+    "@0gfoundation/0g-storage-ts-sdk": {
+      "optional": true
+    },
+    "ethers": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  }
+}

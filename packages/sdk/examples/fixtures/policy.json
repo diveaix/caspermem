@@ -1,0 +1,30 @@
+{
+  "agentId": "trader-01",
+  "kind": "policy",
+  "title": "Owner Risk Policy",
+  "content": {
+    "maxNativeValueWei": "0",
+    "allowedContracts": [
+      "0x1111111111111111111111111111111111111111"
+    ],
+    "allowedSelectors": [
+      "0x095ea7b3",
+      "0xa9059cbb"
+    ],
+    "blockedSelectors": [],
+    "trustedSpenders": [],
+    "trustedRecipients": [],
+    "maxBatchTransactions": 3,
+    "maxTokenApprovalAmount": "1000000000000000000000",
+    "maxTradeUsd": 500,
+    "allowedProtocols": [
+      "Uniswap",
+      "Aave"
+    ],
+    "requireHumanAboveUsd": 250
+  },
+  "tags": [
+    "demo",
+    "policy"
+  ]
+}
