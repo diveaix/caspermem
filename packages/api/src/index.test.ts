@@ -61,7 +61,7 @@ describe("0G-Mem API", () => {
         })
       });
       const memory = (await memoryResponse.json()) as {
-        memory: { agentId: string; title: string };
+        memory: { id: string; agentId: string; title: string };
       };
       expect(memoryResponse.status).toBe(201);
       expect(memory.memory.agentId).toBe("agent");
@@ -85,6 +85,15 @@ describe("0G-Mem API", () => {
       };
       expect(isolatedMemoryResponse.status).toBe(200);
       expect(isolatedMemory.memories).toEqual([]);
+
+      const forbiddenDeleteResponse = await fetch(
+        `${baseUrl}/v1/memory/${encodeURIComponent(memory.memory.id)}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${secondKey}` }
+        }
+      );
+      expect(forbiddenDeleteResponse.status).toBe(404);
 
       const firstProfileResponse = await fetch(
         `${baseUrl}/v1/profile?agentId=agent&query=Policy`,
@@ -141,6 +150,28 @@ describe("0G-Mem API", () => {
       expect(review.verdict.decision).toBe("BLOCK");
       expect(review.verdict.decodedTransactions[0]?.kind).toBe("erc20_approve");
       expect(review.proof.provider).toBe("local");
+
+      const deleteResponse = await fetch(
+        `${baseUrl}/v1/memory/${encodeURIComponent(memory.memory.id)}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${firstKey}` }
+        }
+      );
+      const deleted = (await deleteResponse.json()) as {
+        memory: { id: string; agentId: string };
+      };
+      expect(deleteResponse.status).toBe(200);
+      expect(deleted.memory.id).toBe(memory.memory.id);
+      expect(deleted.memory.agentId).toBe("agent");
+
+      const afterDeleteResponse = await fetch(`${baseUrl}/v1/memory?limit=20`, {
+        headers: { Authorization: `Bearer ${firstKey}` }
+      });
+      const afterDelete = (await afterDeleteResponse.json()) as {
+        memories: Array<{ id: string }>;
+      };
+      expect(afterDelete.memories.some((item) => item.id === memory.memory.id)).toBe(false);
     } finally {
       await new Promise<void>((resolve, reject) =>
         server.close((error) => (error ? reject(error) : resolve()))

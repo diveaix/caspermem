@@ -38,7 +38,12 @@ export class ZeroGMemApiClient {
       return this.request<{ memories: MemoryRecord[] }>(
         `/v1/memory?${params.toString()}`
       ).then((result) => result.memories);
-    }
+    },
+    delete: (id: string) =>
+      this.request<{ memory: MemoryRecord }>(
+        `/v1/memory/${encodeURIComponent(id)}`,
+        { method: "DELETE" }
+      ).then((result) => result.memory)
   };
 
   readonly profile = {

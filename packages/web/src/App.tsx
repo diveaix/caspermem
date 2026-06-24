@@ -1071,6 +1071,7 @@ function Dashboard({
   const [manualForm, setManualForm] = useState<ManualMemoryForm>(emptyManualForm);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [saveMessage, setSaveMessage] = useState("Manual memories are persisted through the authenticated API.");
+  const [deleteState, setDeleteState] = useState<"idle" | "deleting" | "error">("idle");
 
   const selectedMemory = selectedId
     ? memories.find((m) => m.id === selectedId)
@@ -1131,9 +1132,9 @@ function Dashboard({
         const p = await r.json();
         if (cancelled) return;
         const rawMemories: unknown[] = Array.isArray(p.memories) ? p.memories : [];
-        const apiMems = rawMemories
-          .filter(isApiMemoryRecord)
-          .map((memory, index) => mapApiMemory(memory, index));
+        const records = rawMemories.filter(isApiMemoryRecord);
+        const apiMems = records
+          .map((memory, index) => mapApiMemory(memory, index, records.length));
         setMemories(apiMems);
         setSelectedId((current) => {
           if (current && apiMems.some((memory) => memory.id === current)) return current;
@@ -1177,6 +1178,30 @@ function Dashboard({
     } catch (error) {
       setSaveState("error");
       setSaveMessage(`Memory was not saved. ${error instanceof Error ? error.message : "API unavailable."}`);
+    }
+  }
+
+  async function handleDeleteSelectedMemory() {
+    if (!selectedMemory) return;
+    setDeleteState("deleting");
+    try {
+      const r = await fetch(`${apiBaseUrl}/memory/${encodeURIComponent(selectedMemory.id)}`, {
+        method: "DELETE",
+        credentials: "include"
+      });
+      if (!r.ok) throw new Error(`API returned ${r.status}`);
+      setMemories((items) => {
+        const next = items.filter((item) => item.id !== selectedMemory.id);
+        setSelectedId(next[0]?.id);
+        return next;
+      });
+      setDeleteState("idle");
+      setSaveState("success");
+      setSaveMessage("Memory deleted from this workspace.");
+    } catch {
+      setDeleteState("error");
+      setSaveState("error");
+      setSaveMessage("Could not delete that memory. Check the API server and try again.");
     }
   }
 
@@ -1260,9 +1285,21 @@ function Dashboard({
                   <p className="eyebrow">selected memory</p>
                   <h2>{selectedMemory.title}</h2>
                 </div>
-                <span className={`sync-pill ${selectedMemory.status}`}>
-                  {selectedMemory.status === "synced" ? "synced" : "local"}
-                </span>
+                <div className="detail-actions">
+                  <span className={`sync-pill ${selectedMemory.status}`}>
+                    {selectedMemory.status === "synced" ? "synced" : "local"}
+                  </span>
+                  <button
+                    aria-label={`Delete ${selectedMemory.title}`}
+                    className="icon-danger"
+                    disabled={deleteState === "deleting"}
+                    onClick={handleDeleteSelectedMemory}
+                    title="Delete memory"
+                    type="button"
+                  >
+                    {deleteState === "deleting" ? <Loader2 className="spin" size={14} /> : <Trash2 size={14} />}
+                  </button>
+                </div>
               </div>
               <p className="detail-copy">{selectedMemory.detail}</p>
               <dl className="detail-list">
@@ -2035,14 +2072,37 @@ function makeManualMemory(form: ManualMemoryForm, tags: string[], index: number)
   return {
     id: `manual-${Date.now()}`, kind: form.kind, title: form.title.trim(), detail: form.detail.trim(),
     agentId: form.agentId, agentName: form.agentName, source: "Manual", from: "dashboard operator note",
-    age: "now", size: Math.min(138, Math.max(104, 96 + form.title.length)),
+    age: "now", size: Math.min(112, Math.max(86, 76 + form.title.length * 0.45)),
     x: pos.x, y: pos.y, confidence: 82, tags: tags.length > 0 ? tags : ["manual"], linked: [], status: "local"
   };
 }
 
-function nextBubblePosition(index: number) {
-  const positions = [{ x: 18, y: 42 }, { x: 84, y: 32 }, { x: 48, y: 86 }, { x: 15, y: 76 }, { x: 88, y: 68 }, { x: 36, y: 14 }];
-  return positions[index % positions.length];
+function nextBubblePosition(index: number, total = 8) {
+  const slots = [
+    { x: 14, y: 18 }, { x: 38, y: 18 }, { x: 62, y: 18 }, { x: 86, y: 18 },
+    { x: 14, y: 50 }, { x: 38, y: 50 }, { x: 62, y: 50 }, { x: 86, y: 50 },
+    { x: 14, y: 82 }, { x: 38, y: 82 }, { x: 62, y: 82 }, { x: 86, y: 82 }
+  ];
+
+  if (total <= slots.length) {
+    return slots[index % slots.length];
+  }
+
+  if (total <= 1) return { x: 50, y: 76 };
+
+  const columns = 4;
+  const row = Math.floor(index / columns);
+  const col = index % columns;
+  const rows = Math.ceil(total / columns);
+
+  return {
+    x: [14, 38, 62, 86][col],
+    y: clampPercent(12 + (row / Math.max(1, rows - 1)) * 76)
+  };
+}
+
+function clampPercent(value: number) {
+  return Math.min(90, Math.max(10, Math.round(value * 10) / 10));
 }
 
 function parseTags(value: string) {
@@ -2060,7 +2120,7 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-function mapApiMemory(memory: ApiMemoryRecord, index: number): MemoryNode {
+function mapApiMemory(memory: ApiMemoryRecord, index: number, total = 1): MemoryNode {
   const content = memory.content ?? {};
   const agent = agentOptions.find((x) => x.id === memory.agentId);
   const agentName = typeof content.agentName === "string" ? content.agentName : agent?.name ?? memory.agentId;
@@ -2072,12 +2132,12 @@ function mapApiMemory(memory: ApiMemoryRecord, index: number): MemoryNode {
       : typeof content.summary === "string"
         ? content.summary
         : "Persisted memory loaded from the 0G/MEM API.";
-  const pos = nextBubblePosition(index);
+  const pos = nextBubblePosition(index, total);
   return {
     id: memory.id, kind: memory.kind, title: memory.title, detail, agentId: memory.agentId, agentName, source,
     from: source === "Manual" ? "POST /memory" : source === "MCP" ? "MCP / 0gmem_add_memory" : "GET /memory",
     age: memory.createdAt ? "synced" : "saved",
-    size: Math.min(138, Math.max(104, 96 + memory.title.length)), x: pos.x, y: pos.y, confidence: 90,
+    size: Math.min(112, Math.max(86, 76 + memory.title.length * 0.45)), x: pos.x, y: pos.y, confidence: 90,
     tags: memory.tags?.length ? memory.tags.slice(0, 5) : [source.toLowerCase()], linked: [], status: "synced"
   };
 }

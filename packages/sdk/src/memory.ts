@@ -17,6 +17,10 @@ export class MemoryClient {
     return this.storage.listAll();
   }
 
+  async delete(id: string): Promise<MemoryRecord | undefined> {
+    return this.storage.delete(id);
+  }
+
   async search(input: {
     agentId: string;
     query?: string;

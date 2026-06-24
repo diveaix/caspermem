@@ -14,6 +14,7 @@ export interface MemoryStorage {
   add(input: MemoryInput): Promise<MemoryRecord>;
   list(agentId: string): Promise<MemoryRecord[]>;
   listAll(): Promise<MemoryRecord[]>;
+  delete(id: string): Promise<MemoryRecord | undefined>;
   search(input: MemorySearchInput): Promise<MemoryRecord[]>;
 }
 
@@ -38,6 +39,13 @@ export class InMemoryStorage implements MemoryStorage {
     return [...this.memories.values()].sort((left, right) =>
       (right.createdAt ?? "").localeCompare(left.createdAt ?? "")
     );
+  }
+
+  async delete(id: string): Promise<MemoryRecord | undefined> {
+    const record = this.memories.get(id);
+    if (!record) return undefined;
+    this.memories.delete(id);
+    return record;
   }
 
   async search(input: MemorySearchInput): Promise<MemoryRecord[]> {
@@ -85,6 +93,15 @@ export class JsonFileStorage extends InMemoryStorage {
   override async listAll(): Promise<MemoryRecord[]> {
     await this.load();
     return super.listAll();
+  }
+
+  override async delete(id: string): Promise<MemoryRecord | undefined> {
+    await this.load();
+    const record = await super.delete(id);
+    if (record) {
+      await this.persist();
+    }
+    return record;
   }
 
   override async search(input: MemorySearchInput): Promise<MemoryRecord[]> {

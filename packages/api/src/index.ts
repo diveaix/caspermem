@@ -225,6 +225,24 @@ async function routeRequest(
     return;
   }
 
+  const memoryMatch = /^\/memory\/([^/]+)$/.exec(path);
+  if (method === "DELETE" && memoryMatch) {
+    const principal = await requirePrincipal(context, request);
+    const memoryId = decodeURIComponent(memoryMatch[1]);
+    const memory = (await context.sdk.ogmem.memory.listAll()).find(
+      (item) => item.id === memoryId
+    );
+    if (!memory || !memory.agentId.startsWith(`${principal.user.id}:`)) {
+      sendJson(request, response, 404, { error: "Memory not found" });
+      return;
+    }
+    const deleted = await context.sdk.ogmem.memory.delete(memoryId);
+    sendJson(request, response, 200, {
+      memory: deleted ? unScopeMemoryRecord(principal, deleted) : undefined
+    });
+    return;
+  }
+
   if (method === "GET" && path === "/profile") {
     const principal = await requirePrincipal(context, request);
     const agentId = url.searchParams.get("agentId");

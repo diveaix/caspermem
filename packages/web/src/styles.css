@@ -1598,7 +1598,7 @@ h1, h2, h3 {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 14px;
+  padding: 12px;
   text-align: center;
   background: var(--soft);
   border: 1px solid color-mix(in srgb, var(--source) 25%, transparent);
@@ -1614,10 +1614,16 @@ h1, h2, h3 {
 }
 
 .memory-bubble span {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
   color: var(--source);
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .memory-bubble strong {
@@ -1625,14 +1631,51 @@ h1, h2, h3 {
   overflow: hidden;
   font-size: 11px;
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
 
 .memory-bubble small {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
   color: var(--text-muted);
   font-size: 10px;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.icon-danger {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.icon-danger:hover:not(:disabled) {
+  background: #fee2e2;
+  border-color: #fecaca;
+  transform: translateY(-1px);
+}
+
+.icon-danger:disabled {
+  cursor: wait;
+  opacity: 0.65;
 }
 
 /* ── Pills ───────────────────────────────────────────── */
