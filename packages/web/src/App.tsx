@@ -105,10 +105,10 @@ type KeyState = "idle" | "creating" | "created" | "error";
 const apiBaseUrl =
   import.meta.env.VITE_BITMEM_API_URL?.trim().replace(/\/$/, "") ??
   (import.meta.env.PROD
-    ? "https://bit-mem-backend-production.up.railway.app"
+    ? "https://bitmem-backend-production.up.railway.app"
     : "http://127.0.0.1:8787");
 
-const publicApiBaseUrl = "https://bit-mem-backend-production.up.railway.app";
+const publicApiBaseUrl = "https://bitmem-backend-production.up.railway.app";
 
 const emptyManualForm: ManualMemoryForm = {
   agentId: agentOptions[0].id,
@@ -2112,7 +2112,7 @@ function DecisionPill({ decision }: { decision: Decision }) {
 
 function connectionSnippet(method: MethodId) {
   if (method === "api") return `await fetch("${publicApiBaseUrl}/v1/memory", {\n  method: "POST",\n  headers: {\n    "Authorization": "Bearer " + process.env.BITMEM_API_KEY,\n    "Content-Type": "application/json"\n  },\n  body: JSON.stringify(memory)\n});`;
-  if (method === "mcp") return `{\n  "name": "bitmem",\n  "type": "streamable-http",\n  "url": "https://bit-mem-backend-production.up.railway.app/mcp",\n  "bearerTokenEnvVar": "BITMEM_API_KEY"\n}`;
+  if (method === "mcp") return `{\n  "name": "bitmem",\n  "type": "streamable-http",\n  "url": "https://bitmem-backend-production.up.railway.app/mcp",\n  "bearerTokenEnvVar": "BITMEM_API_KEY"\n}`;
   if (method === "bitget") return `{\n  "name": "bitget",\n  "command": "npx",\n  "args": ["-y", "bitget-mcp-server", "--modules", "spot,futures,account", "--read-only"]\n}`;
   return `import { BitMem } from "@bit-mem/sdk";\n\nconst sdk = new BitMem();\n\nawait sdk.bitget.rememberMarketSnapshot(snapshot);\nawait sdk.bitget.createFuturesGuardrailPolicy(policy);\nconst verdict = await sdk.bitget.assessFuturesOrder(orderIntent);`;
 }
@@ -2135,7 +2135,7 @@ function SyntaxHighlightedCode({ method }: { method: MethodId }) {
         {"{\n"}
         {"  "}<span className="syn-prop">"name"</span>{": "}<span className="syn-str">"bitmem"</span>{",\n"}
         {"  "}<span className="syn-prop">"type"</span>{": "}<span className="syn-str">"streamable-http"</span>{",\n"}
-        {"  "}<span className="syn-prop">"url"</span>{": "}<span className="syn-str">"https://bit-mem-backend-production.up.railway.app/mcp"</span>{",\n"}
+        {"  "}<span className="syn-prop">"url"</span>{": "}<span className="syn-str">"https://bitmem-backend-production.up.railway.app/mcp"</span>{",\n"}
         {"  "}<span className="syn-prop">"bearerTokenEnvVar"</span>{": "}<span className="syn-str">"BITMEM_API_KEY"</span>{"\n"}
         {"}"}
       </code>
@@ -2166,7 +2166,7 @@ function SyntaxHighlightedCode({ method }: { method: MethodId }) {
   // api
   return (
     <code>
-      <span className="syn-kw">await</span> <span className="syn-fn">fetch</span>{"("}<span className="syn-str">"https://bit-mem-backend-production.up.railway.app/v1/memory"</span>{", {\n"}
+      <span className="syn-kw">await</span> <span className="syn-fn">fetch</span>{"("}<span className="syn-str">"https://bitmem-backend-production.up.railway.app/v1/memory"</span>{", {\n"}
       {"  "}<span className="syn-prop">method</span>{": "}<span className="syn-str">"POST"</span>{",\n"}
       {"  "}<span className="syn-prop">headers</span>{": {\n"}
       {"    "}<span className="syn-str">"Authorization"</span>{": "}<span className="syn-str">"Bearer "</span>{" + process.env."}<span className="syn-prop">BITMEM_API_KEY</span>{",\n"}

@@ -151,7 +151,7 @@ export const connectionMethods: ConnectionMethod[] = [
     title: "Streamable HTTP MCP",
     subtitle: "Best for Codex, Claude, and LLM agents that need BIT/MEM tools beside Bitget tools.",
     icon: Plug,
-    command: "https://bit-mem-backend-production.up.railway.app/mcp",
+    command: "https://bitmem-backend-production.up.railway.app/mcp",
     bullets: [
       "Paste one HTTPS URL into the MCP client",
       "Use the agent API key as the bearer token",
@@ -163,7 +163,7 @@ export const connectionMethods: ConnectionMethod[] = [
     title: "REST API",
     subtitle: "Best for Python agents, monitoring workers, notebooks, and hosted risk services.",
     icon: Link2,
-    command: "https://bit-mem-backend-production.up.railway.app/v1",
+    command: "https://bitmem-backend-production.up.railway.app/v1",
     bullets: [
       "POST /memory",
       "GET /profile and POST /context",

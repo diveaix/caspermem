@@ -97,7 +97,7 @@ http://127.0.0.1:8788/mcp
 Hosted URL shape:
 
 ```text
-https://bit-mem-backend-production.up.railway.app/mcp
+https://bitmem-backend-production.up.railway.app/mcp
 ```
 
 The MCP server reads the user or agent API key from `Authorization: Bearer ...`.
@@ -122,7 +122,7 @@ Example Streamable HTTP MCP client config:
   "mcpServers": {
     "bitmem": {
       "type": "streamable-http",
-      "url": "https://bit-mem-backend-production.up.railway.app/mcp",
+      "url": "https://bitmem-backend-production.up.railway.app/mcp",
       "bearerTokenEnvVar": "BITMEM_API_KEY"
     }
   }

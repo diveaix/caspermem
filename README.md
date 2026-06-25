@@ -36,12 +36,12 @@ Details:
 The public Railway backend exposes REST and Streamable HTTP MCP on one domain:
 
 ```text
-REST API: https://bit-mem-backend-production.up.railway.app/v1
-MCP URL:  https://bit-mem-backend-production.up.railway.app/mcp
-Health:   https://bit-mem-backend-production.up.railway.app/health
+REST API: https://bitmem-backend-production.up.railway.app/v1
+MCP URL:  https://bitmem-backend-production.up.railway.app/mcp
+Health:   https://bitmem-backend-production.up.railway.app/health
 ```
 
-SDK clients should use `baseUrl: "https://bit-mem-backend-production.up.railway.app"`.
+SDK clients should use `baseUrl: "https://bitmem-backend-production.up.railway.app"`.
 MCP clients should use the `/mcp` URL with the agent API key as the bearer token.
 
 ## What This Website Can Do
@@ -487,7 +487,7 @@ workspace.
 For public demos, host the API/MCP backend and use its HTTPS endpoint:
 
 ```text
-https://bit-mem-backend-production.up.railway.app/mcp
+https://bitmem-backend-production.up.railway.app/mcp
 ```
 
 Tools exposed:
