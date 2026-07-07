@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { createBitMemMcpServer } from "./create-server.js";
+import { createOxysMcpServer } from "./create-server.js";
 
-const server = createBitMemMcpServer({
+const server = createOxysMcpServer({
   allowLocalFallback: true,
   apiBaseUrl:
-    process.env.BITMEM_API_URL ??
-    process.env.BIT_MEM_API_URL ??
+    process.env.OXYS_API_URL ??
+    process.env.OXYS_API_URL ??
     "http://127.0.0.1:8787",
-  apiKey: process.env.BITMEM_API_KEY ?? process.env.BIT_MEM_API_KEY,
-  memoryPath: process.env.BIT_MEM_MCP_MEMORY_PATH ?? ".bit-mem/mcp-memory.json"
+  apiKey: process.env.OXYS_API_KEY ?? process.env.OXYS_API_KEY,
+  memoryPath: process.env.OXYS_MCP_MEMORY_PATH ?? ".oxys/mcp-memory.json"
 });
 
 const transport = new StdioServerTransport();

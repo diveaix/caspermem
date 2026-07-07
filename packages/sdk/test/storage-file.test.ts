@@ -2,7 +2,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { afterEach, describe, expect, it } from "vitest";
-import { JsonFileStorage, BitMem } from "../src/index.js";
+import { JsonFileStorage, Oxys } from "../src/index.js";
 
 let tempDir: string | undefined;
 
@@ -15,14 +15,14 @@ afterEach(async () => {
 
 describe("JsonFileStorage", () => {
   it("persists memory across SDK instances", async () => {
-    tempDir = await mkdtemp(join(tmpdir(), "bit-mem-"));
+    tempDir = await mkdtemp(join(tmpdir(), "oxys-"));
     const filePath = join(tempDir, "memory.json");
-    const first = new BitMem(
+    const first = new Oxys(
       {},
       new JsonFileStorage(filePath)
     );
 
-    await first.bitmem.memory.add({
+    await first.oxys.memory.add({
       agentId: "agent",
       kind: "policy",
       title: "Policy",
@@ -31,11 +31,11 @@ describe("JsonFileStorage", () => {
       }
     });
 
-    const second = new BitMem(
+    const second = new Oxys(
       {},
       new JsonFileStorage(filePath)
     );
-    const results = await second.bitmem.memory.search({
+    const results = await second.oxys.memory.search({
       agentId: "agent",
       query: "Policy"
     });

@@ -8,6 +8,8 @@ npm-debug.log*
 coverage/
 .0g-mem/
 .bit-mem/
+.oxys/
+packages/*/.oxys/
 output/
 .agents/
 skills-lock.json

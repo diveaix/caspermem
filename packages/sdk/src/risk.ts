@@ -36,7 +36,7 @@ export class AegisRiskClient {
     const privateReasoning = await this.compute.generate({
       purpose: "risk_review",
       system:
-        "You are Aegis Risk, a private safety reviewer for autonomous trading agents. Return concise, practical risk reasoning. Do not provide trading alpha or execution advice.",
+        "You are Oxys Risk, a private safety reviewer for autonomous trading agents. Return concise, practical risk reasoning. Do not provide trading alpha or execution advice.",
       user: JSON.stringify({
         intent: plan.intent,
         decodedTransactions,
@@ -65,7 +65,7 @@ export class AegisRiskClient {
         intent: plan.intent,
         txCount: plan.txs.length
       },
-      tags: ["aegis-risk", decision.toLowerCase()]
+      tags: ["oxys-risk", decision.toLowerCase()]
     });
 
     return {

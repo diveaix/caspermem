@@ -1,5 +1,5 @@
 {
-  "name": "@bit-mem/mcp",
+  "name": "@oxys/mcp",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -20,15 +20,16 @@
     }
   },
   "bin": {
-    "bit-mem-mcp": "dist/server.js"
+    "oxys-mcp": "dist/server.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
     "dev": "tsx src/server.ts",
     "http:dev": "tsx src/http.ts"
   },
   "dependencies": {
-    "@bit-mem/sdk": "file:../sdk",
+    "@oxys/sdk": "file:../sdk",
     "@modelcontextprotocol/sdk": "^1.17.4",
     "zod": "^3.25.76"
   },

@@ -1,162 +1,42 @@
-# Agent Connection Guide
+# Oxys Agent Connections
 
-BIT/MEM is not the trading agent. It is the memory, risk, learning, and proof layer that a trading agent calls before and after execution.
+Oxys gives Casper agents three integration paths:
 
-Agents can connect in three ways. In hosted/API mode, every request must be tied
-to a verified user through an API key.
+| Path | Use when |
+| --- | --- |
+| SDK | A Node or TypeScript agent wants to write memory directly. |
+| REST API | A hosted worker, notebook, or Python service needs HTTP access. |
+| MCP | Codex, Claude, or another MCP client needs tools beside CSPR.trade. |
 
-Security rule:
-
-```text
-agentId is routing metadata, not security.
-The API key decides which workspace owns the memory.
-```
-
-Dashboard flow:
-
-1. Open `/#dashboard`.
-2. Enter email.
-3. Open the confirmation link.
-4. Create an API key.
-5. Put that key in the agent runtime as `BITMEM_API_KEY`.
-
-## 1. TypeScript SDK
-
-Best for agents running in Node.js or a TypeScript service.
-
-```ts
-import { BitMemApiClient } from "@bit-mem/sdk";
-
-const client = new BitMemApiClient({
-  apiKey: process.env.BITMEM_API_KEY!,
-  baseUrl: "http://127.0.0.1:8787"
-});
-
-await client.memory.add(memory);
-const context = await client.context.forTradePlan(plan);
-const review = await client.aegis.risk.reviewPlan(plan);
-
-if (review.verdict.decision === "BLOCK") {
-  throw new Error(review.verdict.reason);
-}
-```
-
-The agent keeps its own wallet, executor, strategy, and market data. It calls BIT/MEM before execution and records outcomes afterward.
-
-## 2. REST API
-
-Best for Python agents, hosted workers, workflow engines, or services that do not run TypeScript directly.
-
-Start the API:
-
-```bash
-npm run api:dev
-```
-
-Useful calls:
+## Hosted Endpoints
 
 ```text
-GET  http://127.0.0.1:8787/health
-POST http://127.0.0.1:8787/v1/memory
-GET  http://127.0.0.1:8787/v1/profile?agentId=trader-01&query=vault
-POST http://127.0.0.1:8787/v1/context
-POST http://127.0.0.1:8787/v1/review-plan
-POST http://127.0.0.1:8787/v1/trades/outcome
-POST http://127.0.0.1:8787/v1/learning/reflect
+REST API: https://oxys-backend-production.up.railway.app/v1
+MCP URL:  https://oxys-backend-production.up.railway.app/mcp
 ```
 
-Minimal review request:
+Use `OXYS_API_KEY` as the bearer token environment variable for connected agents.
 
-```bash
-curl -X POST http://127.0.0.1:8787/v1/review-plan \
-  -H "Authorization: Bearer $BITMEM_API_KEY" \
-  -H "Content-Type: application/json" \
-  --data @packages/sdk/examples/fixtures/risky-plan.json
-```
+## Casper Flow
 
-The API includes CORS headers and secure session cookies so the web dashboard can
-call it during a local demo.
+1. Agent reads CSPR.trade or CSPR.cloud data.
+2. Oxys saves the observation as memory.
+3. Agent proposes a CSPR.trade action.
+4. Oxys reviews the action against memory and guardrails.
+5. Oxys returns `ALLOW`, `WARN`, `BLOCK`, or `REQUIRE_HUMAN`.
+6. The signer only sees approved or human-confirmed actions.
+7. The result is saved for future context.
 
-## 3. Streamable HTTP MCP
-
-Best for LLM agents that discover tools through Model Context Protocol.
-
-Start the API and MCP HTTP server locally:
-
-```bash
-npm run api:dev
-npm run mcp:http:dev
-```
-
-Local development URL:
-
-```text
-http://127.0.0.1:8788/mcp
-```
-
-Hosted URL shape:
-
-```text
-https://bitmem-backend-production.up.railway.app/mcp
-```
-
-The MCP server reads the user or agent API key from `Authorization: Bearer ...`.
-In clients such as Codex, set the bearer token environment variable to
-`BITMEM_API_KEY`, then put the actual key in that environment variable.
-
-Available MCP tools:
-
-```text
-bitmem_add_memory
-bitmem_get_profile
-bitmem_context_for_trade_plan
-aegis_review_plan
-bitmem_record_outcome
-bitmem_reflect_failure
-```
-
-Example Streamable HTTP MCP client config:
+## MCP Config
 
 ```json
 {
   "mcpServers": {
-    "bitmem": {
+    "oxys": {
       "type": "streamable-http",
-      "url": "https://bitmem-backend-production.up.railway.app/mcp",
-      "bearerTokenEnvVar": "BITMEM_API_KEY"
+      "url": "https://oxys-backend-production.up.railway.app/mcp",
+      "bearerTokenEnvVar": "OXYS_API_KEY"
     }
   }
 }
 ```
-
-Optional local stdio fallback:
-
-```bash
-BITMEM_API_KEY=bitmem_live_... npm run mcp:dev
-```
-
-The stdio server can fall back to local file memory for offline demos. The
-Streamable HTTP server does not use local fallback because remote clients need
-API-key scoped workspace data.
-
-## Pre-Execution Workflow
-
-1. Agent prepares a transaction plan.
-2. Agent calls `profile` or `context`.
-3. Agent calls Aegis risk review.
-4. BIT/MEM returns `ALLOW`, `WARN`, `BLOCK`, or `REQUIRE_HUMAN`.
-5. Agent executes only when its own policy allows it.
-6. Agent records outcome.
-7. Failure lessons become future memory.
-8. Proof hashes are stored locally or anchored on 0G Chain in live mode.
-
-## Live 0G Mode
-
-Local mode is the demo path. Live 0G mode requires:
-
-- 0G Storage credentials and funded private key
-- 0G Compute Router API key
-- deployed `AegisProofRegistry`
-- 0G Chain private key for proof anchoring
-
-See `docs/LIVE_0G_CHECKLIST.md`.

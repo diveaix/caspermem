@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { BitMem } from "../src/index.js";
+import { Oxys } from "../src/index.js";
 
 describe("context retrieval", () => {
   it("deduplicates repeated memory by kind and title", async () => {
-    const sdk = new BitMem();
+    const sdk = new Oxys();
     const memory = {
       agentId: "agent",
       kind: "policy" as const,
@@ -13,10 +13,10 @@ describe("context retrieval", () => {
       }
     };
 
-    await sdk.bitmem.memory.add(memory);
-    await sdk.bitmem.memory.add(memory);
+    await sdk.oxys.memory.add(memory);
+    await sdk.oxys.memory.add(memory);
 
-    const context = await sdk.bitmem.context.forTradePlan({
+    const context = await sdk.oxys.context.forTradePlan({
       agentId: "agent",
       intent: "Use owner policy",
       txs: [
@@ -36,8 +36,8 @@ describe("context retrieval", () => {
   });
 
   it("always includes baseline policy memory even when the query does not match it", async () => {
-    const sdk = new BitMem();
-    await sdk.bitmem.memory.add({
+    const sdk = new Oxys();
+    await sdk.oxys.memory.add({
       agentId: "agent",
       kind: "policy",
       title: "Owner Risk Policy",
@@ -46,7 +46,7 @@ describe("context retrieval", () => {
         maxTokenApprovalAmount: "10"
       }
     });
-    await sdk.bitmem.memory.add({
+    await sdk.oxys.memory.add({
       agentId: "agent",
       kind: "failure_lesson",
       title: "Vault route failed",
@@ -55,7 +55,7 @@ describe("context retrieval", () => {
       }
     });
 
-    const context = await sdk.bitmem.context.forTradePlan({
+    const context = await sdk.oxys.context.forTradePlan({
       agentId: "agent",
       intent: "Deposit into yield route",
       txs: [

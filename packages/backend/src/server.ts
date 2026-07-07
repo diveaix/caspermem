@@ -2,26 +2,26 @@
 import { existsSync, readFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { resolve } from "node:path";
-import { createBitMemApi } from "@bit-mem/api";
-import { createBitMemMcpHttpApp } from "@bit-mem/mcp/http-app";
-import type { BitMemConfig } from "@bit-mem/sdk";
+import { createOxysApi } from "@oxys/api";
+import { createOxysMcpHttpApp } from "@oxys/mcp/http-app";
+import type { OxysConfig } from "@oxys/sdk";
 
 loadEnvFile();
 
 const port = Number(process.env.PORT ?? "8787");
 const apiBaseUrl = publicApiBaseUrl();
-const memoryPath = process.env.BIT_MEM_API_MEMORY_PATH ?? ".bit-mem/api-memory.json";
+const memoryPath = process.env.OXYS_API_MEMORY_PATH ?? ".oxys/api-memory.json";
 const config = createConfigFromEnv();
 
-const apiServer = createBitMemApi({
+const apiServer = createOxysApi({
   config,
   memoryPath,
   auth: {
-    appUrl: process.env.BIT_MEM_APP_URL,
-    returnDevVerificationToken: process.env.BIT_MEM_RETURN_DEV_TOKENS !== "false"
+    appUrl: process.env.OXYS_APP_URL,
+    returnDevVerificationToken: process.env.OXYS_RETURN_DEV_TOKENS !== "false"
   }
 });
-const mcpApp = createBitMemMcpHttpApp({ apiBaseUrl });
+const mcpApp = createOxysMcpHttpApp({ apiBaseUrl });
 
 const server = createServer((request, response) => {
   const url = request.url ?? "/";
@@ -30,7 +30,7 @@ const server = createServer((request, response) => {
     response.writeHead(200, { "Content-Type": "application/json" });
     response.end(JSON.stringify({
       ok: true,
-      service: "bit-mem-backend",
+      service: "oxys-backend",
       rest: "/v1",
       mcp: "/mcp",
       apiBaseUrl
@@ -47,17 +47,13 @@ const server = createServer((request, response) => {
 });
 
 server.listen(port, () => {
-  console.log(`BIT/MEM backend listening on port ${port}`);
+  console.log(`Oxys backend listening on port ${port}`);
   console.log(`REST API available at ${apiBaseUrl}/v1`);
   console.log(`Streamable HTTP MCP available at ${apiBaseUrl}/mcp`);
-  if (config.chain?.provider === "0g") {
-    console.log(`0G proof registry enabled at ${config.chain.registryAddress}`);
-  }
 });
 
 function publicApiBaseUrl() {
-  if (process.env.BITMEM_API_URL) return process.env.BITMEM_API_URL.replace(/\/$/, "");
-  if (process.env.BIT_MEM_API_URL) return process.env.BIT_MEM_API_URL.replace(/\/$/, "");
+  if (process.env.OXYS_API_URL) return process.env.OXYS_API_URL.replace(/\/$/, "");
   if (process.env.RAILWAY_PUBLIC_DOMAIN) {
     return `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`;
   }
@@ -89,30 +85,6 @@ function unquoteEnvValue(value: string) {
   return value;
 }
 
-function createConfigFromEnv(): BitMemConfig {
-  const config: BitMemConfig = {};
-
-  if (
-    process.env.OG_EVM_RPC &&
-    process.env.AEGIS_REGISTRY_ADDRESS &&
-    process.env.OG_CHAIN_PRIVATE_KEY
-  ) {
-    config.chain = {
-      provider: "0g",
-      rpcUrl: process.env.OG_EVM_RPC,
-      registryAddress: process.env.AEGIS_REGISTRY_ADDRESS,
-      privateKey: process.env.OG_CHAIN_PRIVATE_KEY
-    };
-  }
-
-  if (process.env.OG_COMPUTE_API_KEY) {
-    config.compute = {
-      provider: "0g-router",
-      apiKey: process.env.OG_COMPUTE_API_KEY,
-      baseUrl: process.env.OG_COMPUTE_BASE_URL,
-      model: process.env.OG_COMPUTE_MODEL
-    };
-  }
-
-  return config;
+function createConfigFromEnv(): OxysConfig {
+  return {};
 }

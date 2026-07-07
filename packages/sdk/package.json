@@ -1,6 +1,8 @@
 {
-  "name": "@bit-mem/sdk",
+  "name": "@oxys/sdk",
   "version": "0.1.0",
+  "description": "Memory, guardrail, and audit SDK for Casper AI agents.",
+  "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,9 +11,9 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./bitmem": {
-      "types": "./dist/bitmem.d.ts",
-      "import": "./dist/bitmem.js"
+    "./oxys-core": {
+      "types": "./dist/oxys-core.d.ts",
+      "import": "./dist/oxys-core.js"
     },
     "./aegis": {
       "types": "./dist/aegis.d.ts",
@@ -24,30 +26,33 @@
     "./storage": {
       "types": "./dist/storage.d.ts",
       "import": "./dist/storage.js"
-    },
-    "./storage-0g": {
-      "types": "./dist/storage-0g.d.ts",
-      "import": "./dist/storage-0g.js"
     }
   },
   "files": [
     "dist"
   ],
+  "keywords": [
+    "casper",
+    "cspr",
+    "ai-agent",
+    "mcp",
+    "memory",
+    "guardrails"
+  ],
+  "homepage": "https://oxys-liard.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diveaix/caspermem.git",
+    "directory": "packages/sdk"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
     "build": "tsc -p tsconfig.json",
+    "prepack": "npm run clean && npm run build",
     "test": "vitest run"
-  },
-  "peerDependencies": {
-    "@0gfoundation/0g-storage-ts-sdk": "1.2.10",
-    "ethers": "^6.17.0"
-  },
-  "peerDependenciesMeta": {
-    "@0gfoundation/0g-storage-ts-sdk": {
-      "optional": true
-    },
-    "ethers": {
-      "optional": true
-    }
   },
   "dependencies": {
     "zod": "^3.25.76"

@@ -8,7 +8,7 @@ import type {
   TradePlan
 } from "./types.js";
 
-export type BitMemApiClientConfig = {
+export type OxysApiClientConfig = {
   baseUrl?: string;
   apiKey: string;
   fetchImpl?: typeof fetch;
@@ -20,7 +20,7 @@ export type ReviewPlanResult = {
   proof: ProofRecordResult;
 };
 
-export class BitMemApiClient {
+export class OxysApiClient {
   readonly memory = {
     add: (input: MemoryInput) =>
       this.request<{ memory: MemoryRecord }>("/v1/memory", {
@@ -106,7 +106,7 @@ export class BitMemApiClient {
   private readonly baseUrl: string;
   private readonly fetchImpl: typeof fetch;
 
-  constructor(private readonly config: BitMemApiClientConfig) {
+  constructor(private readonly config: OxysApiClientConfig) {
     this.baseUrl = (config.baseUrl ?? "http://127.0.0.1:8787").replace(/\/$/, "");
     this.fetchImpl = config.fetchImpl ?? fetch;
   }
@@ -131,7 +131,7 @@ export class BitMemApiClient {
       const message =
         payload && typeof payload === "object" && "error" in payload
           ? String(payload.error)
-          : `BIT/MEM API returned ${response.status}`;
+          : `Oxys API returned ${response.status}`;
       throw new Error(message);
     }
 

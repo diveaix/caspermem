@@ -2,7 +2,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { afterEach, describe, expect, it } from "vitest";
-import { createBitMemApi } from "./index.js";
+import { createOxysApi } from "./index.js";
 
 let tempDir: string | undefined;
 
@@ -13,10 +13,10 @@ afterEach(async () => {
   }
 });
 
-describe("BIT/MEM API", () => {
+describe("Oxys API", () => {
   it("requires API key ownership for memory and review routes", async () => {
-    tempDir = await mkdtemp(join(tmpdir(), "bit-mem-api-"));
-    const server = createBitMemApi({
+    tempDir = await mkdtemp(join(tmpdir(), "oxys-api-"));
+    const server = createOxysApi({
       authPath: join(tempDir, "auth.json"),
       memoryPath: join(tempDir, "memory.json")
     });

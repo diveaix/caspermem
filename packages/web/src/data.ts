@@ -3,14 +3,14 @@ import {
   Braces,
   Brain,
   CandlestickChart,
-  Cpu,
+  Cloud,
   Database,
   GitBranch,
   KeyRound,
   Link2,
   Plug,
+  RadioTower,
   ShieldCheck,
-  TerminalSquare,
   Workflow,
   UserCircle2
 } from "lucide-react";
@@ -52,7 +52,7 @@ export type MemoryNode = {
 };
 
 export type ConnectionMethod = {
-  id: "sdk" | "api" | "mcp" | "bitget";
+  id: "sdk" | "api" | "mcp" | "casper";
   title: string;
   subtitle: string;
   icon: LucideIcon;
@@ -80,56 +80,56 @@ export const sourceMeta: Record<
 > = {
   SDK: {
     label: "SDK",
-    color: "#7c3aed",
-    soft: "rgba(124, 58, 237, 0.08)",
-    detail: "native agent runtime"
+    color: "#d64242",
+    soft: "rgba(214, 66, 66, 0.08)",
+    detail: "native Casper agent runtime"
   },
   MCP: {
     label: "MCP",
-    color: "#9333ea",
-    soft: "rgba(147, 51, 234, 0.08)",
-    detail: "tool call from an LLM agent"
+    color: "#2563eb",
+    soft: "rgba(37, 99, 235, 0.08)",
+    detail: "CSPR.trade or LLM tool call"
   },
   API: {
     label: "API",
-    color: "#a855f7",
-    soft: "rgba(168, 85, 247, 0.08)",
+    color: "#059669",
+    soft: "rgba(5, 150, 105, 0.08)",
     detail: "HTTP service or worker"
   },
   Manual: {
     label: "Manual",
-    color: "#ea580c",
-    soft: "rgba(234, 88, 12, 0.08)",
+    color: "#d97706",
+    soft: "rgba(217, 119, 6, 0.08)",
     detail: "operator dashboard entry"
   }
 };
 
 export const agentOptions = [
-  { id: "agent-bitget-01", name: "Bitget Sentinel" },
-  { id: "agent-futures-02", name: "Futures Guard" },
-  { id: "agent-market-03", name: "Market Memory" }
+  { id: "agent-casper-01", name: "Casper Sentinel" },
+  { id: "agent-cspr-trade-02", name: "CSPR Trade Guard" },
+  { id: "agent-provenance-03", name: "CSPR Cloud Watch" }
 ];
 
 export const stackItems = [
   {
-    title: "0G Storage",
-    detail: "Durable Bitget snapshots, guardrail policies, order reviews, outcomes, and agent profiles.",
+    title: "CSPR.trade MCP",
+    detail: "Live Casper mainnet market data, tokens, pairs, quote analysis, transaction-build review, and blocked submit paths.",
+    icon: RadioTower
+  },
+  {
+    title: "CSPR.cloud",
+    detail: "Read-only Casper REST provenance for blocks, deploys, account data, and network state when an API token is configured.",
+    icon: Cloud
+  },
+  {
+    title: "Oxys Memory",
+    detail: "Every Casper tool call and trade review is saved as workspace-scoped memory before it can affect future decisions.",
     icon: Database
   },
   {
-    title: "0G Compute",
-    detail: "Private reasoning path for risk explanations, blocked-order reflection, and policy summaries.",
-    icon: Cpu
-  },
-  {
-    title: "0G Chain",
-    detail: "Compact proof hashes for guardrail decisions, report integrity, and memory provenance.",
-    icon: KeyRound
-  },
-  {
-    title: "Bitget Agent Hub",
-    detail: "Read-only Bitget MCP plus SDK, REST, and BIT/MEM MCP entry points for agent workflows.",
-    icon: TerminalSquare
+    title: "Pre-signing Guardrails",
+    detail: "Spend, slippage, price-impact, human-confirmation, and submit-transaction checks run before a signer sees an action.",
+    icon: ShieldCheck
   }
 ];
 
@@ -137,25 +137,25 @@ export const connectionMethods: ConnectionMethod[] = [
   {
     id: "sdk",
     title: "TypeScript SDK",
-    subtitle: "Best for teams wrapping Bitget Agent Hub from Node or a TypeScript execution service.",
+    subtitle: "Best for teams wrapping Casper agents from Node or a TypeScript execution service.",
     icon: Braces,
-    command: "npm install @bit-mem/sdk",
+    command: "npm install @oxys/sdk",
     bullets: [
-      "Write Bitget snapshots and guardrails from the agent runtime",
-      "Fetch policy and context before a futures order handoff",
-      "Record outcomes, blocked actions, and review reports"
+      "Write Casper observations and policies from the agent runtime",
+      "Fetch memory context before a CSPR.trade action",
+      "Record reviews, outcomes, blocked actions, and lessons"
     ]
   },
   {
     id: "mcp",
-    title: "Streamable HTTP MCP",
-    subtitle: "Best for Codex, Claude, and LLM agents that need BIT/MEM tools beside Bitget tools.",
+    title: "Oxys MCP",
+    subtitle: "Best for Codex, Claude, and LLM agents that need memory and risk tools beside CSPR.trade tools.",
     icon: Plug,
-    command: "https://bitmem-backend-production.up.railway.app/mcp",
+    command: "https://oxys-backend-production.up.railway.app/mcp",
     bullets: [
-      "Paste one HTTPS URL into the MCP client",
-      "Use the agent API key as the bearer token",
-      "Expose memory, context, guardrail review, outcomes, and reflection tools"
+      "Expose memory, context, review, outcome, and reflection tools",
+      "Force Casper trade calls to include agentId and saved memory",
+      "Keep submit_transaction blocked unless explicitly enabled"
     ]
   },
   {
@@ -163,7 +163,7 @@ export const connectionMethods: ConnectionMethod[] = [
     title: "REST API",
     subtitle: "Best for Python agents, monitoring workers, notebooks, and hosted risk services.",
     icon: Link2,
-    command: "https://bitmem-backend-production.up.railway.app/v1",
+    command: "https://oxys-backend-production.up.railway.app/v1",
     bullets: [
       "POST /memory",
       "GET /profile and POST /context",
@@ -171,53 +171,51 @@ export const connectionMethods: ConnectionMethod[] = [
     ]
   },
   {
-    id: "bitget",
-    title: "Bitget Agent Hub",
-    subtitle: "Best for Bitget AI agents that need read-only market context, futures guardrails, and audit memory.",
+    id: "casper",
+    title: "Casper Integrations",
+    subtitle: "Best for live Casper agents that need CSPR.trade tools, CSPR.cloud reads, and pre-signing review.",
     icon: CandlestickChart,
-    command: "npx -y bitget-mcp-server --modules spot,futures,account --read-only",
+    command: "npm run mcp:cspr:probe",
     bullets: [
-      "Ingest Bitget ticker, funding, open-interest, account, and position snapshots",
-      "Review futures order intents against guardrails before execution",
-      "Keep write/trade workflows behind explicit human confirmation"
+      "List and call CSPR.trade mainnet MCP tools through Oxys",
+      "Persist every Casper call or review as agent memory",
+      "Read CSPR.cloud provenance when CSPR_CLOUD_API_TOKEN is configured"
     ]
   }
 ];
 
 export const demoPlan = {
-  agentId: "agent-bitget-01",
-  intent: "Review sample approval before Bitget handoff",
+  agentId: "agent-casper-01",
+  intent: "Review sample transaction before Casper agent handoff",
   txs: [
     {
-      chainId: 16602,
+      chainId: 16661,
       to: "0x1111111111111111111111111111111111111111",
       data: "0x095ea7b30000000000000000000000002222222222222222222222222222222222222222ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
       value: "0",
       label: "Sample blocked approval for guardrail demo"
     }
   ],
-  metadata: { source: "web-dashboard-demo" }
+  metadata: { source: "web-dashboard-demo", network: "casper-mainnet" }
 };
 
 export const productPillars = [
   {
-    title: "Bitget memory before action",
-    body: "The agent retrieves market snapshots, futures exposure, guardrails, prior reviews, and blocked actions before an order handoff.",
+    title: "Casper memory before action",
+    body: "The agent retrieves CSPR.trade observations, CSPR.cloud provenance, guardrails, prior reviews, and blocked actions before a trade handoff.",
     icon: Database
   },
   {
-    title: "Guardrails around execution",
-    body: "Aegis reviews Bitget futures order intents and returns ALLOW, WARN, BLOCK, or REQUIRE_HUMAN without placing trades itself.",
+    title: "Guardrails around signing",
+    body: "Oxys reviews CSPR.trade action plans and returns ALLOW, WARN, BLOCK, or REQUIRE_HUMAN without submitting deploys itself.",
     icon: ShieldCheck
   },
   {
     title: "Audit after outcomes",
-    body: "Blocked actions, handoffs, failures, and human feedback are stored as reusable evidence for future Bitget reviews.",
+    body: "Blocked actions, human approvals, failed paths, and Casper observations are stored as reusable evidence for future reviews.",
     icon: GitBranch
   }
 ];
-
-/* ── New data for supermemory-style landing ────────────── */
 
 export type ProductFeature = {
   id: string;
@@ -233,40 +231,40 @@ export const productFeatures: ProductFeature[] = [
     id: "memory",
     num: "01",
     title: "Memory",
-    headline: "Persistent Bitget context",
-    body: "Bitget ticker, funding, open-interest, account, position, guardrail, and review records are stored and retrieved before every order decision.",
+    headline: "Persistent Casper context",
+    body: "CSPR.trade token, pair, quote, slippage, and analysis responses are saved with agent identity before future reviews use them.",
     icon: Brain
   },
   {
-    id: "aegis",
+    id: "risk",
     num: "02",
-    title: "Aegis Risk",
-    headline: "Pre-handoff safety review",
-    body: "Every Bitget futures order intent passes through leverage, notional, exposure, funding, stale-data, and human-confirmation checks.",
+    title: "Risk Review",
+    headline: "Pre-signing safety checks",
+    body: "Casper actions pass through spend, price-impact, slippage, and human-confirmation policy before a signer or submit path is allowed.",
     icon: ShieldCheck
   },
   {
-    id: "learning",
+    id: "provenance",
     num: "03",
-    title: "Learning",
-    headline: "Structured risk reflection",
-    body: "Blocked or skipped Bitget actions produce reusable lessons, suggested guardrail updates, and human-approval flags.",
-    icon: GitBranch
+    title: "Provenance",
+    headline: "Casper data attached to memory",
+    body: "CSPR.cloud reads can be stored beside reviews so operators can trace network context, deploys, and block state.",
+    icon: Cloud
   },
   {
-    id: "proofs",
+    id: "blocked",
     num: "04",
-    title: "Proofs",
-    headline: "Verifiable audit trail on 0G Chain",
-    body: "Decision hashes, Bitget risk reports, and memory artifacts can be anchored on-chain so operators can verify the review trail.",
+    title: "Blocked Paths",
+    headline: "Submit is off by default",
+    body: "submit_transaction remains blocked unless explicitly enabled, and direct submit attempts leave a failure memory trail.",
     icon: KeyRound
   },
   {
     id: "profiles",
     num: "05",
     title: "Profiles",
-    headline: "One-call Bitget agent state",
-    body: "Retrieve the agent's profile plus recent Bitget market, position, policy, and review context in a single call.",
+    headline: "One-call Casper agent state",
+    body: "Retrieve an agent profile plus recent CSPR.trade observations, policies, risk reports, and human feedback in one call.",
     icon: UserCircle2
   },
   {
@@ -274,7 +272,7 @@ export const productFeatures: ProductFeature[] = [
     num: "06",
     title: "Context",
     headline: "Relevant guardrail context",
-    body: "Before a futures order is reviewed, the context module retrieves matching policies, exposure snapshots, market state, and prior risk reports.",
+    body: "Before an action is reviewed, Oxys retrieves matching policies, prior blocked actions, market observations, and risk memory.",
     icon: Workflow
   }
 ];
@@ -282,16 +280,16 @@ export const productFeatures: ProductFeature[] = [
 export type ComparisonRow = {
   aspect: string;
   legacy: string;
-  bitmem: string;
+  oxys: string;
 };
 
 export const comparisonRows: ComparisonRow[] = [
-  { aspect: "Market context", legacy: "Forgotten MCP responses", bitmem: "Persistent Bitget snapshots" },
-  { aspect: "Futures risk", legacy: "Ad hoc order checks", bitmem: "Leverage, notional, exposure, and funding guardrails" },
-  { aspect: "Execution", legacy: "Agent can jump straight to write tools", bitmem: "Dry-run handoff gated by ALLOW or human review" },
-  { aspect: "Audit", legacy: "No durable trail", bitmem: "Stored risk reports and proof hashes" },
-  { aspect: "Storage", legacy: "Local logs or dashboards only", bitmem: "0G-backed memory artifacts" },
-  { aspect: "Privacy", legacy: "Risk reasoning exposed in app logs", bitmem: "Private reasoning via 0G Router" }
+  { aspect: "Market context", legacy: "Forgotten MCP responses", oxys: "Persistent CSPR.trade observations" },
+  { aspect: "Trade risk", legacy: "Ad hoc checks before signing", oxys: "Spend, slippage, and price-impact guardrails" },
+  { aspect: "Execution", legacy: "Agent can jump straight to write tools", oxys: "Build/submit paths gated by review and human approval" },
+  { aspect: "Audit", legacy: "No durable trail", oxys: "Saved request, review, failure, and outcome memories" },
+  { aspect: "Provenance", legacy: "Network context lost in logs", oxys: "CSPR.cloud reads attached to memory" },
+  { aspect: "Control", legacy: "Submit tools exposed too early", oxys: "submit_transaction blocked by default" }
 ];
 
 export type HowItWorksStep = {
@@ -301,9 +299,9 @@ export type HowItWorksStep = {
 };
 
 export const howItWorksSteps: HowItWorksStep[] = [
-  { num: "1", title: "Connect Bitget", body: "Start Bitget Agent Hub read-only and initialize the BIT/MEM SDK or MCP layer." },
-  { num: "2", title: "Capture snapshots", body: "Store ticker, funding, open-interest, account, position, and tool-call observations." },
-  { num: "3", title: "Review order", body: "Submit a Bitget futures order intent. Aegis checks policy, exposure, and market context." },
-  { num: "4", title: "Handoff or stop", body: "Return ALLOW, WARN, BLOCK, or REQUIRE_HUMAN before any Bitget write operation." },
-  { num: "5", title: "Record & audit", body: "Store the report, outcome, human feedback, and proof hashes for future reviews." }
+  { num: "1", title: "Connect Casper", body: "Use the Oxys MCP server with CSPR.trade mainnet MCP and optional CSPR.cloud credentials." },
+  { num: "2", title: "Capture observations", body: "Store token, pair, quote, slippage, account, block, deploy, and tool-call observations." },
+  { num: "3", title: "Review action", body: "Submit a CSPR.trade action plan. Oxys checks policy, metrics, and recent memory." },
+  { num: "4", title: "Handoff or stop", body: "Return ALLOW, WARN, BLOCK, or REQUIRE_HUMAN before any signing or deploy submission." },
+  { num: "5", title: "Record audit", body: "Store the request, review, result, failure, outcome, and human feedback for future reviews." }
 ];

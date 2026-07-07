@@ -1,6 +1,6 @@
-import { BitMem } from "../src/index.js";
+import { Oxys } from "../src/index.js";
 
-const mem = new BitMem();
+const mem = new Oxys();
 
 const agentId = "trader-01";
 const token = "0x1111111111111111111111111111111111111111";

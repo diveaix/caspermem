@@ -103,7 +103,7 @@ export type DecodedTransaction = {
 };
 
 export type PrivateReasoning = {
-  provider: "local" | "0g";
+  provider: "local";
   model?: string;
   summary: string;
   raw?: unknown;
@@ -131,30 +131,21 @@ export type ProofRecordInput = {
 
 export type ProofRecordResult = {
   proofHash: string;
-  provider: "local" | "0g";
+  provider: "local";
   txHash?: string;
   decisionId?: string;
 };
 
-export type BitMemConfig = {
+export type OxysConfig = {
   agentId?: string;
   storage?: {
-    provider: "local" | "file" | "0g";
+    provider: "local" | "file";
     path?: string;
-    indexerRpc?: string;
-    evmRpc?: string;
-    privateKey?: string;
   };
   compute?: {
-    provider: "local" | "0g-private-computer" | "0g-router";
-    apiKey?: string;
-    baseUrl?: string;
-    model?: string;
+    provider: "local";
   };
   chain?: {
-    provider: "local" | "0g";
-    rpcUrl?: string;
-    registryAddress?: string;
-    privateKey?: string;
+    provider: "local";
   };
 };

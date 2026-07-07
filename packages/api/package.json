@@ -1,5 +1,5 @@
 {
-  "name": "@bit-mem/api",
+  "name": "@oxys/api",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
@@ -15,7 +15,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@bit-mem/sdk": "file:../sdk"
+    "@oxys/sdk": "file:../sdk"
   },
   "devDependencies": {
     "@types/node": "^22.13.14",

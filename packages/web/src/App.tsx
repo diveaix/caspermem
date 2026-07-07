@@ -103,12 +103,12 @@ type LoginState = "idle" | "sending" | "sent" | "error";
 type KeyState = "idle" | "creating" | "created" | "error";
 
 const apiBaseUrl =
-  import.meta.env.VITE_BITMEM_API_URL?.trim().replace(/\/$/, "") ??
+  import.meta.env.VITE_OXYS_API_URL?.trim().replace(/\/$/, "") ??
   (import.meta.env.PROD
-    ? "https://bitmem-backend-production.up.railway.app"
+    ? "https://oxys-backend-production.up.railway.app"
     : "http://127.0.0.1:8787");
 
-const publicApiBaseUrl = "https://bitmem-backend-production.up.railway.app";
+const publicApiBaseUrl = "https://oxys-backend-production.up.railway.app";
 
 const emptyManualForm: ManualMemoryForm = {
   agentId: agentOptions[0].id,
@@ -133,12 +133,12 @@ function Logo() {
 
 /* ── Code Scramble Background ────────────────────────── */
 
-const CODE_CHARS = "{}();=>const let var await async import export function return if else for while new this .map.filter.reduce.find0123456789abcdefABCDEF01sdk.memory.add({agentId:kind:content:})risk.reviewPlan({intent:txs})verdict.decision//→ALLOW|BLOCK";
+const CODE_CHARS = "{}();=>const let var await async import export function return if else for while new this .map.filter.reduce.find0123456789abcdefABCDEF01sdk.memory.add({agentId:kind:content:})risk.callTool({intent:txs})verdict.decision//→ALLOW|BLOCK";
 const CODE_SNIPPETS = [
   "const", "let", "var", "await", "async", "import", "from", "export",
   "function", "return", "if", "else", "=>", "new", ".add", ".get",
-  "sdk", "memory", "risk", "plan", "agent", "0G", "tx", "hash",
-  "proof", "chain", "block", "allow", "warn", "0x", "uint", "key",
+  "sdk", "memory", "risk", "plan", "agent", "Casper", "tx", "hash",
+  "audit", "chain", "block", "allow", "warn", "0x", "uint", "key",
   "{", "}", "(", ")", ";", ":", "=", "/", ".", ",", "[", "]",
   "++", "--", "&&", "||", "!=", "===", ">>", "<<", "0xff", "null",
   "true", "false", "void", "type", "enum", "class", "extends",
@@ -308,9 +308,9 @@ function CodeScrambleBackground() {
 
           // Only render if visible enough
           if (cell.alpha > 0.015) {
-            // Use purple tint near cursor, grey elsewhere
+            // Use accent tint near cursor, grey elsewhere
             if (inRadius && proximity > 0.3) {
-              ctx!.fillStyle = `rgba(124, 58, 237, ${cell.alpha * 0.85})`;
+              ctx!.fillStyle = `rgba(214, 66, 66, ${cell.alpha * 0.85})`;
             } else {
               ctx!.fillStyle = `rgba(180, 185, 195, ${cell.alpha})`;
             }
@@ -359,13 +359,13 @@ const legacyStepSnippets: { file: string; content: React.ReactNode }[] = [
     content: (
       <code>
         <span className="cm">{"# 1. Install the SDK"}</span>{"\n"}
-        <span className="fn">npm</span>{" install "}<span className="str">@bit-mem/sdk</span>{"\n\n"}
+        <span className="fn">npm</span>{" install "}<span className="str">@oxys/sdk</span>{"\n\n"}
         <span className="cm">{"# 2. Or start the Streamable HTTP MCP server"}</span>{"\n"}
         <span className="fn">npm</span>{" run "}<span className="str">mcp:http:dev</span>{"\n\n"}
         <span className="cm">{"# Initialize the client"}</span>{"\n"}
-        <span className="kw">import</span>{" { BitMemApiClient } "}<span className="kw">from</span>{" "}<span className="str">"@bit-mem/sdk"</span>{"\n"}
-        <span className="kw">const</span>{" client = "}<span className="kw">new</span>{" "}<span className="fn">BitMemApiClient</span>{"({\n"}
-        {"  "}<span className="prop">apiKey</span>{": process.env."}<span className="prop">BITMEM_API_KEY</span>{"\n"}{"})"}{";"}
+        <span className="kw">import</span>{" { OxysApiClient } "}<span className="kw">from</span>{" "}<span className="str">"@oxys/sdk"</span>{"\n"}
+        <span className="kw">const</span>{" client = "}<span className="kw">new</span>{" "}<span className="fn">OxysApiClient</span>{"({\n"}
+        {"  "}<span className="prop">apiKey</span>{": process.env."}<span className="prop">OXYS_API_KEY</span>{"\n"}{"})"}{";"}
       </code>
     )
   },
@@ -373,7 +373,7 @@ const legacyStepSnippets: { file: string; content: React.ReactNode }[] = [
     file: "memory.ts",
     content: (
       <code>
-        <span className="cm">{"// Store a policy for the Bitget agent"}</span>{"\n"}
+        <span className="cm">{"// Store a policy for the Casper agent"}</span>{"\n"}
         <span className="kw">await</span>{" client.memory."}<span className="fn">add</span>{"({\n"}
         {"  "}<span className="prop">agentId</span>{": "}<span className="str">"trader-01"</span>{",\n"}
         {"  "}<span className="prop">kind</span>{": "}<span className="str">"policy"</span>{",\n"}
@@ -385,7 +385,7 @@ const legacyStepSnippets: { file: string; content: React.ReactNode }[] = [
         <span className="kw">await</span>{" client.memory."}<span className="fn">add</span>{"({\n"}
         {"  "}<span className="prop">agentId</span>{": "}<span className="str">"trader-01"</span>{",\n"}
         {"  "}<span className="prop">kind</span>{": "}<span className="str">"skill"</span>{",\n"}
-        {"  "}<span className="prop">title</span>{": "}<span className="str">"Bitget futures guardrails"</span>{"\n"}
+        {"  "}<span className="prop">title</span>{": "}<span className="str">"CSPR.trade guardrails"</span>{"\n"}
         {"});"}
       </code>
     )
@@ -395,13 +395,13 @@ const legacyStepSnippets: { file: string; content: React.ReactNode }[] = [
     content: (
       <code>
         <span className="cm">{"// Submit a dry-run order plan for review"}</span>{"\n"}
-        <span className="kw">const</span>{" review = "}<span className="kw">await</span>{" client.aegis.risk."}<span className="fn">reviewPlan</span>{"({\n"}
+        <span className="kw">const</span>{" review = "}<span className="kw">await</span>{" client."}<span className="fn">callTool</span>{"({\n"}
         {"  "}<span className="prop">agentId</span>{": "}<span className="str">"trader-01"</span>{",\n"}
-        {"  "}<span className="prop">intent</span>{": "}<span className="str">"Review BTCUSDT futures handoff"</span>{",\n"}
+        {"  "}<span className="prop">intent</span>{": "}<span className="str">"Review CSPR.trade build_swap handoff"</span>{",\n"}
         {"  "}<span className="prop">txs</span>{": [{\n"}
         {"    "}<span className="prop">to</span>{": "}<span className="str">"0x1111...1111"</span>{",\n"}
         {"    "}<span className="prop">data</span>{": "}<span className="str">"0x095ea7b3..."</span>{",\n"}
-        {"    "}<span className="prop">label</span>{": "}<span className="str">"Sample guardrail proof"</span>{"\n"}
+        {"    "}<span className="prop">label</span>{": "}<span className="str">"Sample guardrail review"</span>{"\n"}
         {"  }]\n"}{"})"}{";"}
         {"\n\n"}{"console."}<span className="fn">log</span>{"(review.verdict."}<span className="prop">decision</span>{");\n"}
         <span className="cm">{"// → ALLOW | WARN | BLOCK | REQUIRE_HUMAN"}</span>
@@ -433,7 +433,7 @@ const legacyStepSnippets: { file: string; content: React.ReactNode }[] = [
         <span className="kw">await</span>{" client.memory."}<span className="fn">add</span>{"({\n"}
         {"  "}<span className="prop">agentId</span>{": "}<span className="str">"trader-01"</span>{",\n"}
         {"  "}<span className="prop">kind</span>{": "}<span className="str">"executed_trade"</span>{",\n"}
-        {"  "}<span className="prop">title</span>{": "}<span className="str">"BTCUSDT guardrail review"</span>{",\n"}
+        {"  "}<span className="prop">title</span>{": "}<span className="str">"CSPR.trade guardrail review"</span>{",\n"}
         {"  "}<span className="prop">content</span>{": { "}<span className="prop">slippage</span>{": "}<span className="prop">0.3</span>{", "}<span className="prop">gasUsd</span>{": "}<span className="prop">2.1</span>{" }\n"}
         {"});\n\n"}
         <span className="cm">{"// Generate failure lesson if needed"}</span>{"\n"}
@@ -453,13 +453,13 @@ const stepSnippets: { file: string; content: React.ReactNode }[] = [
     file: "setup.sh",
     content: (
       <code>
-        <span className="cm">{"# 1. Install BIT/MEM"}</span>{"\n"}
-        <span className="fn">npm</span>{" install "}<span className="str">@bit-mem/sdk</span>{"\n\n"}
-        <span className="cm">{"# 2. Start Bitget Agent Hub read-only"}</span>{"\n"}
-        <span className="fn">npx</span>{" -y "}<span className="str">bitget-mcp-server</span>{" --modules "}<span className="str">spot,futures,account</span>{" --read-only\n\n"}
+        <span className="cm">{"# 1. Install Oxys"}</span>{"\n"}
+        <span className="fn">npm</span>{" install "}<span className="str">@oxys/sdk</span>{"\n\n"}
+        <span className="cm">{"# 2. Probe Casper mainnet through Oxys MCP"}</span>{"\n"}
+        <span className="fn">npm</span>{" run "}<span className="str">mcp:cspr:probe</span>{"\n\n"}
         <span className="cm">{"# 3. Initialize the infra layer"}</span>{"\n"}
-        <span className="kw">import</span>{" { BitMem } "}<span className="kw">from</span>{" "}<span className="str">"@bit-mem/sdk"</span>{"\n"}
-        <span className="kw">const</span>{" sdk = "}<span className="kw">new</span>{" "}<span className="fn">BitMem</span>{"();"}
+        <span className="kw">import</span>{" { Oxys } "}<span className="kw">from</span>{" "}<span className="str">"@oxys/sdk"</span>{"\n"}
+        <span className="kw">const</span>{" sdk = "}<span className="kw">new</span>{" "}<span className="fn">Oxys</span>{"();"}
       </code>
     )
   },
@@ -467,18 +467,19 @@ const stepSnippets: { file: string; content: React.ReactNode }[] = [
     file: "memory.ts",
     content: (
       <code>
-        <span className="cm">{"// Store Bitget futures guardrails"}</span>{"\n"}
-        <span className="kw">await</span>{" sdk.bitget."}<span className="fn">createFuturesGuardrailPolicy</span>{"({\n"}
-        {"  "}<span className="prop">agentId</span>{": "}<span className="str">"agent-bitget-01"</span>{",\n"}
-        {"  "}<span className="prop">allowedSymbols</span>{": ["}<span className="str">"BTCUSDT"</span>{", "}<span className="str">"ETHUSDT"</span>{"],\n"}
-        {"  "}<span className="prop">maxLeverage</span>{": "}<span className="prop">5</span>{",\n"}
-        {"  "}<span className="prop">maxSingleOrderUsd</span>{": "}<span className="prop">1000</span>{"\n"}
+        <span className="cm">{"// Store CSPR.trade guardrails as agent memory"}</span>{"\n"}
+        <span className="kw">await</span>{" sdk.memory."}<span className="fn">add</span>{"({\n"}
+        {"  "}<span className="prop">agentId</span>{": "}<span className="str">"agent-casper-01"</span>{",\n"}
+        {"  "}<span className="prop">kind</span>{": "}<span className="str">"policy"</span>{",\n"}
+        {"  "}<span className="prop">title</span>{": "}<span className="str">"CSPR.trade signing limits"</span>{",\n"}
+        {"  "}<span className="prop">content</span>{": { "}<span className="prop">maxSpendCSPR</span>{": "}<span className="prop">10</span>{", "}<span className="prop">maxSlippagePct</span>{": "}<span className="prop">1</span>{" }\n"}
         {"});\n\n"}
-        <span className="cm">{"// Remember Bitget Agent Hub observations"}</span>{"\n"}
-        <span className="kw">await</span>{" sdk.bitget."}<span className="fn">rememberMarketSnapshot</span>{"({\n"}
-        {"  "}<span className="prop">agentId</span>{": "}<span className="str">"agent-bitget-01"</span>{",\n"}
-        {"  "}<span className="prop">symbol</span>{": "}<span className="str">"BTCUSDT"</span>{",\n"}
-        {"  "}<span className="prop">productType</span>{": "}<span className="str">"USDT-FUTURES"</span>{"\n"}
+        <span className="cm">{"// Remember a live CSPR.trade observation"}</span>{"\n"}
+        <span className="kw">await</span>{" sdk.memory."}<span className="fn">add</span>{"({\n"}
+        {"  "}<span className="prop">agentId</span>{": "}<span className="str">"agent-casper-01"</span>{",\n"}
+        {"  "}<span className="prop">kind</span>{": "}<span className="str">"protocol_profile"</span>{",\n"}
+        {"  "}<span className="prop">title</span>{": "}<span className="str">"CSPR token route available"</span>{",\n"}
+        {"  "}<span className="prop">tags</span>{": ["}<span className="str">"casper"</span>{", "}<span className="str">"cspr-trade"</span>{"]\n"}
         {"});"}
       </code>
     )
@@ -487,13 +488,15 @@ const stepSnippets: { file: string; content: React.ReactNode }[] = [
     file: "review.ts",
     content: (
       <code>
-        <span className="cm">{"// Review a proposed Bitget futures order"}</span>{"\n"}
-        <span className="kw">const</span>{" verdict = "}<span className="kw">await</span>{" sdk.bitget."}<span className="fn">assessFuturesOrder</span>{"({\n"}
-        {"  "}<span className="prop">agentId</span>{": "}<span className="str">"agent-bitget-01"</span>{",\n"}
-        {"  "}<span className="prop">symbol</span>{": "}<span className="str">"BTCUSDT"</span>{",\n"}
-        {"  "}<span className="prop">productType</span>{": "}<span className="str">"USDT-FUTURES"</span>{",\n"}
-        {"  "}<span className="prop">side</span>{": "}<span className="str">"buy"</span>{", "}<span className="prop">orderType</span>{": "}<span className="str">"market"</span>{",\n"}
-        {"  "}<span className="prop">size</span>{": "}<span className="str">"0.02"</span>{", "}<span className="prop">leverage</span>{": "}<span className="str">"7"</span>{"\n"}
+        <span className="cm">{"// Review a proposed CSPR.trade action"}</span>{"\n"}
+        <span className="kw">const</span>{" verdict = "}<span className="kw">await</span>{" client."}<span className="fn">callTool</span>{"({\n"}
+        {"  "}<span className="prop">name</span>{": "}<span className="str">"cspr_trade_review_action"</span>{",\n"}
+        {"  "}<span className="prop">arguments</span>{": {\n"}
+        {"    "}<span className="prop">agentId</span>{": "}<span className="str">"agent-casper-01"</span>{",\n"}
+        {"    "}<span className="prop">toolName</span>{": "}<span className="str">"build_swap"</span>{",\n"}
+        {"    "}<span className="prop">toolArgs</span>{": { "}<span className="prop">fromToken</span>{": "}<span className="str">"CSPR"</span>{", "}<span className="prop">toToken</span>{": "}<span className="str">"sCSPR"</span>{", "}<span className="prop">amount</span>{": "}<span className="str">"5"</span>{" },\n"}
+        {"    "}<span className="prop">humanConfirmed</span>{": "}<span className="kw">false</span>{", "}<span className="prop">callTool</span>{": "}<span className="kw">false</span>{"\n"}
+        {"  }\n"}
         {"});\n\n"}
         {"console."}<span className="fn">log</span>{"(verdict."}<span className="prop">decision</span>{");\n"}
         <span className="cm">{"// ALLOW | WARN | BLOCK | REQUIRE_HUMAN"}</span>
@@ -507,9 +510,9 @@ const stepSnippets: { file: string; content: React.ReactNode }[] = [
         <span className="cm">{"// Handoff only after guardrails pass"}</span>{"\n"}
         <span className="kw">const</span>{" { "}<span className="prop">decision</span>{", "}<span className="prop">reason</span>{" } = verdict;\n\n"}
         <span className="kw">if</span>{" (decision === "}<span className="str">"ALLOW"</span>{") {\n"}
-        {"  "}<span className="kw">return</span>{" "}<span className="fn">buildBitgetHandoff</span>{"(order);\n"}
+        {"  "}<span className="kw">return</span>{" "}<span className="fn">sendToSigner</span>{"(csprTradeAction);\n"}
         {"} "}<span className="kw">else if</span>{" (decision === "}<span className="str">"REQUIRE_HUMAN"</span>{") {\n"}
-        {"  "}<span className="kw">await</span>{" "}<span className="fn">notifyOperator</span>{"({ order, reason });\n"}
+        {"  "}<span className="kw">await</span>{" "}<span className="fn">notifyOperator</span>{"({ action: csprTradeAction, reason });\n"}
         {"} "}<span className="kw">else</span>{" {\n"}
         {"  console."}<span className="fn">log</span>{"("}<span className="str">"Blocked:"</span>{", reason);\n"}
         {"}"}
@@ -522,10 +525,10 @@ const stepSnippets: { file: string; content: React.ReactNode }[] = [
       <code>
         <span className="cm">{"// Store the review for future context"}</span>{"\n"}
         <span className="kw">await</span>{" sdk.memory."}<span className="fn">add</span>{"({\n"}
-        {"  "}<span className="prop">agentId</span>{": "}<span className="str">"agent-bitget-01"</span>{",\n"}
+        {"  "}<span className="prop">agentId</span>{": "}<span className="str">"agent-casper-01"</span>{",\n"}
         {"  "}<span className="prop">kind</span>{": "}<span className="str">"risk_report"</span>{",\n"}
-        {"  "}<span className="prop">title</span>{": "}<span className="str">"BTCUSDT order review"</span>{",\n"}
-        {"  "}<span className="prop">content</span>{": { "}<span className="prop">decision</span>{": verdict."}<span className="prop">decision</span>{", "}<span className="prop">reportHash</span>{": verdict."}<span className="prop">reportHash</span>{" }\n"}
+        {"  "}<span className="prop">title</span>{": "}<span className="str">"CSPR.trade build_swap review"</span>{",\n"}
+        {"  "}<span className="prop">content</span>{": { "}<span className="prop">decision</span>{": verdict."}<span className="prop">decision</span>{", "}<span className="prop">toolName</span>{": "}<span className="str">"build_swap"</span>{" }\n"}
         {"});\n\n"}
         <span className="cm">{"// Future reviews retrieve this memory"}</span>{"\n"}
         {"console."}<span className="fn">log</span>{"(verdict."}<span className="prop">findings</span>{");"}
@@ -611,7 +614,7 @@ export function App() {
   const [loginMessage, setLoginMessage] = useState("Use the email that owns this workspace.");
   const [verificationUrl, setVerificationUrl] = useState<string | undefined>();
   const [keyState, setKeyState] = useState<KeyState>("idle");
-  const [keyMessage, setKeyMessage] = useState("Create one key per Bitget agent or runtime.");
+  const [keyMessage, setKeyMessage] = useState("Create one key per Casper agent or runtime.");
   const [newKeySecret, setNewKeySecret] = useState<string | undefined>();
 
   useEffect(() => {
@@ -756,7 +759,7 @@ export function App() {
       <header className="topbar">
         <button className="brand" onClick={() => navigate("landing")} type="button">
           <span className="brand-logo"><Logo /></span>
-          <strong>BIT/MEM</strong>
+          <strong>Oxys</strong>
         </button>
 
         <nav className={menuOpen ? "nav-links open" : "nav-links"} aria-label="Primary">
@@ -851,7 +854,7 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
 
   async function copyNpx() {
     try {
-      await navigator.clipboard.writeText("npm install @bit-mem/sdk");
+      await navigator.clipboard.writeText("npm install @oxys/sdk");
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch { /* silent */ }
@@ -875,7 +878,7 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
               <span className="chip-label-text">New</span>
             </span>
             <span className="chip-body">
-              <span className="chip-body-text">Built for Bitget AI Hackathon Track 2</span>
+              <span className="chip-body-text">Built for Casper AI Hackathon Track 2</span>
               <svg viewBox="0 0 12 12" aria-hidden="true">
                 <path d="M3 6h6m0 0L6 3m3 3L6 9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
               </svg>
@@ -885,13 +888,13 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
           {/* Headline */}
           <h1 className="hero-headline">
             Risk memory for<br />
-            Bitget AI agents<span className="accent-dot">.</span>
+            Casper AI agents<span className="accent-dot">.</span>
           </h1>
 
           {/* Subhead */}
           <p className="hero-subhead">
-            BIT/MEM connects Bitget Agent Hub data to persistent memory, futures
-            guardrails, dry-run handoffs, and verifiable audit reports on 0G.
+            Oxys connects CSPR.trade and CSPR.cloud data to persistent memory,
+            pre-signing guardrails, dry-run handoffs, and reusable Casper audit records.
           </p>
 
           {/* CTA group */}
@@ -904,7 +907,7 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
                 </span>
               </button>
               <button className="btn-secondary" onClick={onConnect} type="button">
-                Connect Bitget
+                Connect Casper
               </button>
             </div>
 
@@ -916,7 +919,7 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
               data-copied={copied ? "true" : "false"}
             >
               <span className="dollar">$</span>
-              <span className="npx-text">npm install @bit-mem/sdk</span>
+              <span className="npx-text">npm install @oxys/sdk</span>
               <span className="npx-copied">Copied</span>
               <span className="npx-icon">
                 {copied
@@ -937,13 +940,13 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
 
           {/* Logo ticker */}
           <div className="hero-ticker">
-            <p className="hero-ticker-label">Bitget Agent Hub plus the 0G decentralized stack</p>
+            <p className="hero-ticker-label">CSPR.trade MCP plus Casper network provenance</p>
             <div className="hero-ticker-logos">
-              <span><Database size={16} /> 0G Storage</span>
-              <span><ShieldCheck size={16} /> 0G Compute</span>
-              <span><GitBranch size={16} /> 0G Chain</span>
-              <span><Code2 size={16} /> Bitget SDK</span>
-              <span><RadioTower size={16} /> Bitget MCP</span>
+              <span><RadioTower size={16} /> CSPR.trade MCP</span>
+              <span><Database size={16} /> Oxys Memory</span>
+              <span><ShieldCheck size={16} /> Pre-signing Review</span>
+              <span><GitBranch size={16} /> CSPR.cloud</span>
+              <span><Code2 size={16} /> Casper Mainnet</span>
               <span><ArrowRight size={16} /> REST</span>
             </div>
           </div>
@@ -954,7 +957,7 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
       <div className="section-container">
         <span className="section-num">1 / 6</span>
         <div className="feature-tabs-layout">
-          <h2>Six things BIT/MEM gives a Bitget AI agent.</h2>
+          <h2>Six things Oxys gives a Casper AI agent.</h2>
           <nav className="feature-tab-list" aria-label="Product features">
             {productFeatures.map((f) => {
               const Icon = f.icon;
@@ -980,13 +983,13 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
       <div className="section-container">
         <span className="section-num">2 / 6</span>
         <h2 style={{ margin: "0 0 32px", fontSize: 32, fontWeight: 600, letterSpacing: "-0.03em", maxWidth: 560 }}>
-          Not a trading bot. The infrastructure around Bitget Agent Hub.
+          Not a trading bot. The infrastructure around CSPR.trade MCP.
         </h2>
         <div className="split-cards">
           <div className="split-card">
             <Code2 size={20} />
-            <h3>Bitget bridge</h3>
-            <p>Read-only Bitget Agent Hub observations become durable market, account, position, policy, and risk memory.</p>
+            <h3>Casper bridge</h3>
+            <p>Read-only CSPR.trade MCP observations become durable market, account, position, policy, and risk memory.</p>
           </div>
           <div className="split-card">
             <RadioTower size={20} />
@@ -999,7 +1002,7 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
             <tr>
               <th>Aspect</th>
               <th>Without guardrail memory</th>
-              <th>With BIT/MEM + Bitget</th>
+              <th>With Oxys + Casper</th>
             </tr>
           </thead>
           <tbody>
@@ -1007,7 +1010,7 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
               <tr key={row.aspect}>
                 <td>{row.aspect}</td>
                 <td>{row.legacy}</td>
-                <td>{row.bitmem}</td>
+                <td>{row.oxys}</td>
               </tr>
             ))}
           </tbody>
@@ -1018,16 +1021,16 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
       <div className="section-container">
         <span className="section-num">3 / 6</span>
         <h2 className="section-heading">
-          Five steps from Bitget data to auditable risk.
+          Five steps from Casper data to auditable risk.
         </h2>
         <StepsShowcase />
       </div>
 
-      {/* ── Section 4: 0G Stack ── */}
+      {/* ── Section 4: Casper Stack ── */}
       <div className="section-container">
         <span className="section-num">4 / 6</span>
         <h2 style={{ margin: "0 0 32px", fontSize: 32, fontWeight: 600, letterSpacing: "-0.03em", maxWidth: 560 }}>
-          Bitget market memory, private reasoning, verifiable proof.
+          Casper market memory, network provenance, pre-signing review.
         </h2>
         <div className="stack-grid">
           {stackItems.map((item) => {
@@ -1048,7 +1051,7 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
         <span className="section-num">5 / 6</span>
         <div className="feature-section" style={{ padding: 0, maxWidth: "100%" }}>
           <h2 style={{ margin: "0 0 48px", fontSize: 32, fontWeight: 600, letterSpacing: "-0.03em", maxWidth: 560 }}>
-            Three things BIT/MEM gives a Bitget AI agent.
+            Three things Oxys gives a Casper AI agent.
           </h2>
           <div className="feature-list">
             {productPillars.map((pillar, i) => (
@@ -1068,13 +1071,13 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
         <div className="split-cards">
           <div className="split-card">
             <Database size={20} />
-            <h3>For Bitget SDK agents</h3>
-            <p>Install the SDK, store Bitget snapshots, review futures intents, record outcomes, and anchor proofs from TypeScript.</p>
+            <h3>For Casper SDK agents</h3>
+            <p>Install the SDK, store Casper snapshots, review CSPR.trade actions, and record outcomes from TypeScript.</p>
           </div>
           <div className="split-card">
             <RadioTower size={20} />
             <h3>For LLM operators</h3>
-            <p>Run Bitget MCP read-only beside BIT/MEM MCP so Codex, Claude, or any MCP client can inspect risk before handoff.</p>
+            <p>Run Casper MCP read-only beside Oxys MCP so Codex, Claude, or any MCP client can inspect risk before handoff.</p>
           </div>
         </div>
       </div>
@@ -1082,8 +1085,8 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
       {/* ── Footer ── */}
       <footer className="site-footer">
         <div className="footer-cta-banner">
-          <h2>Bitget AI agents deserve guardrail memory.</h2>
-          <p>Persistent market context, futures risk review, dry-run handoff, and verifiable proof. Built on 0G.</p>
+          <h2>Casper AI agents deserve guardrail memory.</h2>
+          <p>Persistent market context, Casper risk review, dry-run handoff, and audit memory. Built on Casper.</p>
           <div className="footer-cta-actions">
             <button className="btn-primary" onClick={onDashboard} type="button">
               <span className="btn-primary-label">Start Building</span>
@@ -1092,13 +1095,13 @@ function Landing({ onConnect, onDashboard }: { onConnect: () => void; onDashboar
               </span>
             </button>
             <button className="btn-secondary" onClick={onConnect} type="button">
-              Connect Bitget
+              Connect Casper
             </button>
           </div>
         </div>
         <div className="footer-bottom">
           <div className="footer-inner">
-            <p>BIT/MEM - Built for Bitget AI Hackathon Track 2</p>
+            <p>Oxys - Built for Casper AI Hackathon Track 2</p>
             <div className="footer-links">
               <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
               <a href="#dashboard">Dashboard</a>
@@ -1190,17 +1193,17 @@ function Dashboard({
       {
         label: "Connected agents",
         value: connectedAgents.toLocaleString(),
-        detail: "Bitget agents with saved memory"
+        detail: "Casper agents with saved memory"
       },
       {
         label: "Active API keys",
         value: activeKeys.toLocaleString(),
-        detail: "keys Bitget agents can use right now"
+        detail: "keys Casper agents can use right now"
       },
       {
         label: "Sources active",
         value: activeSources.toLocaleString(),
-        detail: "Bitget, SDK, MCP, API, or manual sources seen"
+        detail: "Casper, SDK, MCP, API, or manual sources seen"
       }
     ];
   }, [apiKeys, connectedAgents, memories.length, sourceCounts]);
@@ -1263,7 +1266,7 @@ function Dashboard({
       setMemories((items) => [saved, ...items]);
       setSelectedId(saved.id);
       setSaveState("success");
-      setSaveMessage("Saved through the BIT/MEM API and added to the graph.");
+      setSaveMessage("Saved through the Oxys API and added to the graph.");
       setManualForm((f) => ({ ...f, title: "", detail: "", tags: "" }));
     } catch (error) {
       setSaveState("error");
@@ -1328,9 +1331,9 @@ function Dashboard({
     <main className="dashboard-layout">
       <section className="dashboard-hero">
         <div>
-          <p className="eyebrow">Bitget risk control plane</p>
-          <h1>See what every Bitget agent remembers.</h1>
-          <p>Data enters through Bitget Agent Hub, SDK, MCP, REST API, or manual operator notes. The graph keeps source and agent identity visible.</p>
+          <p className="eyebrow">Casper risk control plane</p>
+          <h1>See what every Casper agent remembers.</h1>
+          <p>Data enters through CSPR.trade MCP, SDK, MCP, REST API, or manual operator notes. The graph keeps source and agent identity visible.</p>
         </div>
         <div className="dashboard-actions">
           <button className="secondary-action" onClick={onConnect} type="button">Connection guide</button>
@@ -1355,7 +1358,7 @@ function Dashboard({
         <article className="panel map-panel">
           <div className="panel-header">
             <div>
-              <p className="eyebrow">saved Bitget data map</p>
+              <p className="eyebrow">saved Casper data map</p>
               <h2>Memory by source and agent</h2>
             </div>
             <div className="legend">
@@ -1406,7 +1409,7 @@ function Dashboard({
             <EmptyPanel
               eyebrow="selected memory"
               title="No memory selected"
-              detail="Add memory manually or connect Bitget through the SDK, MCP server, or REST API."
+              detail="Add memory manually or connect Casper through the SDK, MCP server, or REST API."
             />
           )}
         </aside>
@@ -1424,8 +1427,8 @@ function Dashboard({
             <strong>verified email</strong>
           </div>
           <p className="detail-copy">
-            Create one key per Bitget agent or runtime. New keys are shown once,
-            then agents use them through the SDK, MCP server, REST API, or Bitget ingestion flow.
+            Create one key per Casper agent or runtime. New keys are shown once,
+            then agents use them through the SDK, MCP server, REST API, or Casper ingestion flow.
           </p>
           <button className="primary-action full" onClick={onApiKeys} type="button">
             <KeyRound size={15} />
@@ -1443,7 +1446,7 @@ function Dashboard({
           </div>
           <form className="memory-form" onSubmit={handleAddMemory}>
             <label>
-              <span>Bitget agent</span>
+              <span>Casper agent</span>
               <select value={manualForm.agentId} onChange={(e) => handleAgentChange(e.target.value)}>
                 {agentOptions.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
               </select>
@@ -1456,15 +1459,15 @@ function Dashboard({
             </label>
             <label>
               <span>Title</span>
-              <input value={manualForm.title} onChange={(e) => setManualForm((f) => ({ ...f, title: e.target.value }))} placeholder="e.g. BTCUSDT leverage cap" />
+              <input value={manualForm.title} onChange={(e) => setManualForm((f) => ({ ...f, title: e.target.value }))} placeholder="e.g. CSPR.trade spend cap" />
             </label>
             <label>
               <span>Memory content</span>
-              <textarea value={manualForm.detail} onChange={(e) => setManualForm((f) => ({ ...f, detail: e.target.value }))} placeholder="What should the agent remember before a Bitget order handoff?" rows={4} />
+              <textarea value={manualForm.detail} onChange={(e) => setManualForm((f) => ({ ...f, detail: e.target.value }))} placeholder="What should the agent remember before a CSPR.trade action?" rows={4} />
             </label>
             <label>
               <span>Tags</span>
-              <input value={manualForm.tags} onChange={(e) => setManualForm((f) => ({ ...f, tags: e.target.value }))} placeholder="bitget, futures, funding" />
+              <input value={manualForm.tags} onChange={(e) => setManualForm((f) => ({ ...f, tags: e.target.value }))} placeholder="casper, cspr, cspr-trade" />
             </label>
             <button className="primary-action full" type="submit" disabled={saveState === "saving"}>
               {saveState === "saving" ? <Loader2 className="spin" size={15} /> : <Save size={15} />}
@@ -1480,8 +1483,8 @@ function Dashboard({
         <article className="panel review-panel">
           <div className="panel-header">
             <div>
-              <p className="eyebrow">aegis review</p>
-              <h2>Sample transaction decision</h2>
+              <p className="eyebrow">guardrail review</p>
+              <h2>Sample Casper decision</h2>
             </div>
             {review ? <DecisionPill decision={review.verdict.decision} /> : <span className="pending-pill">Not run</span>}
           </div>
@@ -1492,9 +1495,9 @@ function Dashboard({
                 <p>{review.verdict.reason}</p>
               </div>
               <div className="review-source">
-                {review.proof?.provider === "0g"
-                  ? `Recorded on 0G Chain${review.proof.txHash ? `: ${shortHash(review.proof.txHash)}` : "."}`
-                  : `Verdict returned by the API. Proof provider: ${review.proof?.provider ?? "not reported"}.`}
+                {`Verdict returned by Oxys for Casper agent memory.${
+                  review.proof?.decisionId ? ` Decision: ${shortHash(review.proof.decisionId)}.` : ""
+                }`}
               </div>
             </>
           ) : (
@@ -1554,13 +1557,13 @@ function MemoryBubbleMap({ memories, onSelect, selectedId }: { memories: MemoryN
       </svg>
       <div className="memory-core">
         <Database size={18} />
-        <strong>BIT/MEM</strong>
+        <strong>Oxys</strong>
         <span>shared memory</span>
       </div>
       {memories.length === 0 && (
         <div className="bubble-empty">
           <strong>No saved memories yet</strong>
-          <span>Connect Bitget or add the first memory manually.</span>
+          <span>Connect Casper or add the first memory manually.</span>
         </div>
       )}
       {memories.map((m) => (
@@ -1648,8 +1651,8 @@ function ApiKeysPage({
       <section className="api-keys-hero">
         <div>
           <p className="eyebrow">workspace access</p>
-          <h1>Issue keys for Bitget agents that write memory.</h1>
-          <p>Each SDK, MCP, REST, or Bitget ingestion runtime should have its own key so records stay scoped, auditable, and easy to revoke.</p>
+          <h1>Issue keys for Casper agents that write memory.</h1>
+          <p>Each SDK, MCP, REST, or Casper ingestion runtime should have its own key so records stay scoped, auditable, and easy to revoke.</p>
         </div>
         <button className="secondary-action" onClick={onConnect} type="button">
           Connection guide
@@ -1661,7 +1664,7 @@ function ApiKeysPage({
         <article>
           <span>Active keys</span>
           <strong>{activeKeys.length}</strong>
-          <p>usable by connected Bitget agents</p>
+          <p>usable by connected Casper agents</p>
         </article>
         <article>
           <span>Revoked keys</span>
@@ -1690,7 +1693,7 @@ function ApiKeysPage({
         <aside className="panel api-keys-guide">
           <div className="panel-header">
             <div>
-              <p className="eyebrow">Bitget agent setup</p>
+              <p className="eyebrow">Casper agent setup</p>
               <h2>Use the key outside the dashboard</h2>
             </div>
             <Code2 size={18} />
@@ -1698,15 +1701,15 @@ function ApiKeysPage({
           <div className="key-setup-list">
             <div>
               <span>SDK</span>
-              <code>BITMEM_API_KEY=bitmem_live_...</code>
+              <code>OXYS_API_KEY=oxys_live_...</code>
             </div>
             <div>
               <span>MCP</span>
-              <code>Bearer token env var: BITMEM_API_KEY</code>
+              <code>Bearer token env var: OXYS_API_KEY</code>
             </div>
             <div>
               <span>REST</span>
-              <code>Authorization: Bearer bitmem_live_...</code>
+              <code>Authorization: Bearer oxys_live_...</code>
             </div>
           </div>
           <p className="detail-copy">
@@ -1741,9 +1744,9 @@ function AuthPanel({
     <section className="auth-panel">
       <div className="auth-panel-copy">
         <p className="eyebrow">workspace login</p>
-        <h1>Confirm your email before Bitget agents write memory.</h1>
+        <h1>Confirm your email before Casper agents write memory.</h1>
         <p>
-          Your dashboard session creates API keys. Your SDK, MCP, and Bitget
+          Your dashboard session creates API keys. Your SDK, MCP, and Casper
           ingestion agents use those keys so every memory record is scoped to your workspace.
         </p>
       </div>
@@ -1797,7 +1800,7 @@ function ApiKeyPanel({
   onRevokeApiKey: (id: string) => Promise<void>;
   user: AuthUser;
 }) {
-  const [name, setName] = useState("Bitget agent key");
+  const [name, setName] = useState("Casper agent key");
   const [copyLabel, setCopyLabel] = useState("Copy");
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -1822,7 +1825,7 @@ function ApiKeyPanel({
       <div className="panel-header">
         <div>
           <p className="eyebrow">workspace identity</p>
-          <h2>API keys for Bitget memory</h2>
+          <h2>API keys for Casper memory</h2>
         </div>
         <KeyRound size={18} />
       </div>
@@ -1917,7 +1920,7 @@ function Connect({
   }
 
   const workflowSteps = [
-    { num: "1", label: "Capture Bitget", icon: Database },
+    { num: "1", label: "Capture Casper", icon: Database },
     { num: "2", label: "Fetch context", icon: Search },
     { num: "3", label: "Review order", icon: ShieldCheck },
     { num: "4", label: "Handoff or stop", icon: CheckCircle2 },
@@ -1932,8 +1935,8 @@ function Connect({
           <RadioTower size={12} />
           <span>Integration Surface</span>
         </div>
-        <h1>Connect Bitget agents<br />without giving up control<span className="accent-dot">.</span></h1>
-        <p>The agent keeps its signal loop and execution path.<br className="hide-mobile" />BIT/MEM supplies Bitget memory, guardrail review, dry-run handoff, and proofs.</p>
+        <h1>Connect Casper agents<br />without giving up control<span className="accent-dot">.</span></h1>
+        <p>The agent keeps its signal loop and signing path.<br className="hide-mobile" />Oxys supplies Casper memory, guardrail review, dry-run handoff, and audit memory.</p>
       </section>
 
       {/* ── Method Selector ── */}
@@ -1999,7 +2002,7 @@ function Connect({
           <div className="connect-code-block">
             <div className="connect-code-header">
               <div className="connect-code-dots"><span /><span /><span /></div>
-              <span>{method.id === "sdk" ? "agent.ts" : method.id === "mcp" ? "mcp-config.json" : method.id === "bitget" ? "bitget-agent-hub.json" : "client.ts"}</span>
+              <span>{method.id === "sdk" ? "agent.ts" : method.id === "mcp" ? "mcp-config.json" : method.id === "casper" ? "cspr-trade-review.ts" : "client.ts"}</span>
             </div>
             <pre><SyntaxHighlightedCode method={activeMethod} /></pre>
           </div>
@@ -2024,7 +2027,7 @@ function Connect({
                   <KeyRound size={18} />
                 </div>
                 <p className="detail-copy">
-                  Create and revoke Bitget agent credentials from the dedicated API Keys page.
+                  Create and revoke Casper agent credentials from the dedicated API Keys page.
                   Keep one key per runtime so access is easy to rotate.
                 </p>
                 <button className="primary-action full" onClick={onApiKeys} type="button">
@@ -2046,14 +2049,14 @@ function Connect({
           <article className="connect-status-card">
             <div className="connect-status-header">
               <span className="connect-status-dot" />
-              <strong>Live on 0G mainnet</strong>
+              <strong>Live on Casper mainnet</strong>
             </div>
-            <p>Proof registry deployed. Set API env variables, restart the API, then SDK and MCP calls use authenticated workspace data.</p>
+            <p>CSPR.trade mainnet is reachable through MCP. CSPR.cloud reads attach network provenance when a token is configured.</p>
             <div className="connect-status-address">
-              <code>0xCbc3AE7d33c2F6E2600E0F9E3fE1610DD84E14A5</code>
+              <code>https://mcp.cspr.trade/mcp</code>
             </div>
-            <a href="/docs/live-0g-checklist.md" target="_blank" rel="noreferrer" className="connect-status-link">
-              Read deployment checklist
+            <a href="/docs/casper-integration.md" target="_blank" rel="noreferrer" className="connect-status-link">
+              Read Casper integration notes
               <ArrowRight size={13} />
             </a>
           </article>
@@ -2064,7 +2067,7 @@ function Connect({
       <section className="connect-workflow">
         <div className="connect-workflow-header">
           <span className="section-num">pipeline</span>
-          <h2>Five steps from Bitget signal to verifiable safety.</h2>
+          <h2>Five steps from Casper signal to controlled handoff.</h2>
         </div>
         <div className="connect-pipeline">
           {workflowSteps.map((step, i) => {
@@ -2111,21 +2114,24 @@ function DecisionPill({ decision }: { decision: Decision }) {
 /* ── Utilities ────────────────────────────────────────── */
 
 function connectionSnippet(method: MethodId) {
-  if (method === "api") return `await fetch("${publicApiBaseUrl}/v1/memory", {\n  method: "POST",\n  headers: {\n    "Authorization": "Bearer " + process.env.BITMEM_API_KEY,\n    "Content-Type": "application/json"\n  },\n  body: JSON.stringify(memory)\n});`;
-  if (method === "mcp") return `{\n  "name": "bitmem",\n  "type": "streamable-http",\n  "url": "https://bitmem-backend-production.up.railway.app/mcp",\n  "bearerTokenEnvVar": "BITMEM_API_KEY"\n}`;
-  if (method === "bitget") return `{\n  "name": "bitget",\n  "command": "npx",\n  "args": ["-y", "bitget-mcp-server", "--modules", "spot,futures,account", "--read-only"]\n}`;
-  return `import { BitMem } from "@bit-mem/sdk";\n\nconst sdk = new BitMem();\n\nawait sdk.bitget.rememberMarketSnapshot(snapshot);\nawait sdk.bitget.createFuturesGuardrailPolicy(policy);\nconst verdict = await sdk.bitget.assessFuturesOrder(orderIntent);`;
+  if (method === "api") return `await fetch("${publicApiBaseUrl}/v1/memory", {\n  method: "POST",\n  headers: {\n    "Authorization": "Bearer " + process.env.OXYS_API_KEY,\n    "Content-Type": "application/json"\n  },\n  body: JSON.stringify(memory)\n});`;
+  if (method === "mcp") return `{\n  "name": "Oxys",\n  "type": "streamable-http",\n  "url": "https://oxys-backend-production.up.railway.app/mcp",\n  "bearerTokenEnvVar": "OXYS_API_KEY"\n}`;
+  if (method === "casper") return `const review = await client.callTool({\n  name: "cspr_trade_review_action",\n  arguments: {\n    agentId: "agent-casper-01",\n    toolName: "build_swap",\n    toolArgs: { fromToken: "CSPR", toToken: "sCSPR", amount: "5" },\n    callTool: false,\n    humanConfirmed: false\n  }\n});`;
+  return `import { Oxys } from "@oxys/sdk";\n\nconst sdk = new Oxys();\n\nawait sdk.memory.add({\n  agentId: "agent-casper-01",\n  kind: "policy",\n  title: "CSPR.trade signing limits",\n  content: { maxSpendCSPR: 10, maxSlippagePct: 1 }\n});`;
 }
 
 function SyntaxHighlightedCode({ method }: { method: MethodId }) {
   if (method === "sdk") {
     return (
       <code>
-        <span className="syn-kw">import</span>{" { BitMem } "}<span className="syn-kw">from</span> <span className="syn-str">"@bit-mem/sdk"</span>{";\n\n"}
-        <span className="syn-kw">const</span>{" sdk = "}<span className="syn-kw">new</span>{" "}<span className="syn-fn">BitMem</span>{"();"}
-        {"\n\n"}<span className="syn-kw">await</span>{" sdk.bitget."}<span className="syn-fn">rememberMarketSnapshot</span>{"(snapshot);\n"}
-        <span className="syn-kw">await</span>{" sdk.bitget."}<span className="syn-fn">createFuturesGuardrailPolicy</span>{"(policy);\n"}
-        <span className="syn-kw">const</span>{" verdict = "}<span className="syn-kw">await</span>{" sdk.bitget."}<span className="syn-fn">assessFuturesOrder</span>{"(orderIntent);"}
+        <span className="syn-kw">import</span>{" { Oxys } "}<span className="syn-kw">from</span> <span className="syn-str">"@oxys/sdk"</span>{";\n\n"}
+        <span className="syn-kw">const</span>{" sdk = "}<span className="syn-kw">new</span>{" "}<span className="syn-fn">Oxys</span>{"();"}
+        {"\n\n"}<span className="syn-kw">await</span>{" sdk.memory."}<span className="syn-fn">add</span>{"({\n"}
+        {"  "}<span className="syn-prop">agentId</span>{": "}<span className="syn-str">"agent-casper-01"</span>{",\n"}
+        {"  "}<span className="syn-prop">kind</span>{": "}<span className="syn-str">"policy"</span>{",\n"}
+        {"  "}<span className="syn-prop">title</span>{": "}<span className="syn-str">"CSPR.trade signing limits"</span>{",\n"}
+        {"  "}<span className="syn-prop">content</span>{": { "}<span className="syn-prop">maxSpendCSPR</span>{": "}<span className="syn-num">10</span>{", "}<span className="syn-prop">maxSlippagePct</span>{": "}<span className="syn-num">1</span>{" }\n"}
+        {"});"}
       </code>
     );
   }
@@ -2133,32 +2139,26 @@ function SyntaxHighlightedCode({ method }: { method: MethodId }) {
     return (
       <code>
         {"{\n"}
-        {"  "}<span className="syn-prop">"name"</span>{": "}<span className="syn-str">"bitmem"</span>{",\n"}
+        {"  "}<span className="syn-prop">"name"</span>{": "}<span className="syn-str">"Oxys"</span>{",\n"}
         {"  "}<span className="syn-prop">"type"</span>{": "}<span className="syn-str">"streamable-http"</span>{",\n"}
-        {"  "}<span className="syn-prop">"url"</span>{": "}<span className="syn-str">"https://bitmem-backend-production.up.railway.app/mcp"</span>{",\n"}
-        {"  "}<span className="syn-prop">"bearerTokenEnvVar"</span>{": "}<span className="syn-str">"BITMEM_API_KEY"</span>{"\n"}
+        {"  "}<span className="syn-prop">"url"</span>{": "}<span className="syn-str">"https://oxys-backend-production.up.railway.app/mcp"</span>{",\n"}
+        {"  "}<span className="syn-prop">"bearerTokenEnvVar"</span>{": "}<span className="syn-str">"OXYS_API_KEY"</span>{"\n"}
         {"}"}
       </code>
     );
   }
-  if (method === "bitget") {
+  if (method === "casper") {
     return (
       <code>
-        <span className="syn-kw">const</span>{" bitget = {\n"}
-        {"  "}<span className="syn-prop">name</span>{": "}<span className="syn-str">"bitget"</span>{",\n"}
-        {"  "}<span className="syn-prop">command</span>{": "}<span className="syn-str">"npx"</span>{",\n"}
-        {"  "}<span className="syn-prop">args</span>{": ["}<span className="syn-str">"-y"</span>{", "}<span className="syn-str">"bitget-mcp-server"</span>{", "}<span className="syn-str">"--modules"</span>{", "}<span className="syn-str">"spot,futures,account"</span>{", "}<span className="syn-str">"--read-only"</span>{"]\n"}
-        {"};\n\n"}
-        <span className="syn-kw">await</span>{" sdk.bitget."}<span className="syn-fn">rememberMarketSnapshot</span>{"(snapshot);\n"}
-        <span className="syn-kw">const</span>{" verdict = "}<span className="syn-kw">await</span>{" sdk.bitget."}<span className="syn-fn">assessFuturesOrder</span>{"({\n"}
-        {"  "}<span className="syn-prop">agentId</span>{": "}<span className="syn-str">"agent-bitget-01"</span>{",\n"}
-        {"  "}<span className="syn-prop">symbol</span>{": "}<span className="syn-str">"BTCUSDT"</span>{",\n"}
-        {"  "}<span className="syn-prop">productType</span>{": "}<span className="syn-str">"USDT-FUTURES"</span>{",\n"}
-        {"  "}<span className="syn-prop">side</span>{": "}<span className="syn-str">"buy"</span>{",\n"}
-        {"  "}<span className="syn-prop">orderType</span>{": "}<span className="syn-str">"market"</span>{",\n"}
-        {"  "}<span className="syn-prop">size</span>{": "}<span className="syn-str">"0.02"</span>{",\n"}
-        {"  "}<span className="syn-prop">leverage</span>{": "}<span className="syn-str">"3"</span>{",\n"}
-        {"  "}<span className="syn-prop">readOnlyMcp</span>{": "}<span className="syn-kw">true</span>{"\n"}
+        <span className="syn-kw">const</span>{" review = "}<span className="syn-kw">await</span>{" client."}<span className="syn-fn">callTool</span>{"({\n"}
+        {"  "}<span className="syn-prop">name</span>{": "}<span className="syn-str">"cspr_trade_review_action"</span>{",\n"}
+        {"  "}<span className="syn-prop">arguments</span>{": {\n"}
+        {"    "}<span className="syn-prop">agentId</span>{": "}<span className="syn-str">"agent-casper-01"</span>{",\n"}
+        {"    "}<span className="syn-prop">toolName</span>{": "}<span className="syn-str">"build_swap"</span>{",\n"}
+        {"    "}<span className="syn-prop">toolArgs</span>{": { "}<span className="syn-prop">fromToken</span>{": "}<span className="syn-str">"CSPR"</span>{", "}<span className="syn-prop">toToken</span>{": "}<span className="syn-str">"sCSPR"</span>{", "}<span className="syn-prop">amount</span>{": "}<span className="syn-str">"5"</span>{" },\n"}
+        {"    "}<span className="syn-prop">callTool</span>{": "}<span className="syn-kw">false</span>{",\n"}
+        {"    "}<span className="syn-prop">humanConfirmed</span>{": "}<span className="syn-kw">false</span>{"\n"}
+        {"  }\n"}
         {"});"}
       </code>
     );
@@ -2166,10 +2166,10 @@ function SyntaxHighlightedCode({ method }: { method: MethodId }) {
   // api
   return (
     <code>
-      <span className="syn-kw">await</span> <span className="syn-fn">fetch</span>{"("}<span className="syn-str">"https://bitmem-backend-production.up.railway.app/v1/memory"</span>{", {\n"}
+      <span className="syn-kw">await</span> <span className="syn-fn">fetch</span>{"("}<span className="syn-str">"https://oxys-backend-production.up.railway.app/v1/memory"</span>{", {\n"}
       {"  "}<span className="syn-prop">method</span>{": "}<span className="syn-str">"POST"</span>{",\n"}
       {"  "}<span className="syn-prop">headers</span>{": {\n"}
-      {"    "}<span className="syn-str">"Authorization"</span>{": "}<span className="syn-str">"Bearer "</span>{" + process.env."}<span className="syn-prop">BITMEM_API_KEY</span>{",\n"}
+      {"    "}<span className="syn-str">"Authorization"</span>{": "}<span className="syn-str">"Bearer "</span>{" + process.env."}<span className="syn-prop">OXYS_API_KEY</span>{",\n"}
       {"    "}<span className="syn-str">"Content-Type"</span>{": "}<span className="syn-str">"application/json"</span>{"\n"}
       {"  },\n"}
       {"  "}<span className="syn-prop">body</span>{": JSON."}<span className="syn-fn">stringify</span>{"(memory)\n"}
@@ -2242,11 +2242,11 @@ function mapApiMemory(memory: ApiMemoryRecord, index: number, total = 1): Memory
       ? content.detail
       : typeof content.summary === "string"
         ? content.summary
-        : "Persisted memory loaded from the BIT/MEM API.";
+        : "Persisted memory loaded from the Oxys API.";
   const pos = nextBubblePosition(index, total);
   return {
     id: memory.id, kind: memory.kind, title: memory.title, detail, agentId: memory.agentId, agentName, source,
-    from: source === "Manual" ? "POST /memory" : source === "MCP" ? "MCP / bitmem_add_memory" : "GET /memory",
+    from: source === "Manual" ? "POST /memory" : source === "MCP" ? "MCP memory tool" : "GET /memory",
     age: memory.createdAt ? "synced" : "saved",
     size: Math.min(112, Math.max(86, 76 + memory.title.length * 0.45)), x: pos.x, y: pos.y, confidence: 90,
     tags: memory.tags?.length ? memory.tags.slice(0, 5) : [source.toLowerCase()], linked: [], status: "synced"

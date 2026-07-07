@@ -1,10 +1,10 @@
 import { readFile } from "node:fs/promises";
-import { BitMem } from "../src/index.js";
+import { Oxys } from "../src/index.js";
 
-export const demoMemoryPath = ".bit-mem/demo-memory.json";
+export const demoMemoryPath = ".oxys/demo-memory.json";
 
-export function createDemoSdk(): BitMem {
-  return new BitMem({
+export function createDemoSdk(): Oxys {
+  return new Oxys({
     storage: {
       provider: "file",
       path: demoMemoryPath

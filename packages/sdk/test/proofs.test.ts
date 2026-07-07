@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
-  AEGIS_PROOF_REGISTRY_ABI,
   ProofsClient,
-  BitMem,
+  Oxys,
   createProofRecorderFromConfig
 } from "../src/index.js";
 
@@ -23,7 +22,7 @@ describe("proof recording", () => {
   });
 
   it("is wired through the SDK facade", async () => {
-    const sdk = new BitMem();
+    const sdk = new Oxys();
 
     const result = await sdk.proofs.recordDecision({
       agentId: "agent-01",
@@ -35,20 +34,15 @@ describe("proof recording", () => {
     expect(result.provider).toBe("local");
   });
 
-  it("requires complete 0G chain config for live proofs", () => {
-    expect(() =>
-      createProofRecorderFromConfig({
-        provider: "0g",
-        rpcUrl: "https://evmrpc-testnet.0g.ai"
-      })
-    ).toThrow(/registryAddress/);
-  });
+  it("uses local proof recording from config", async () => {
+    const recorder = createProofRecorderFromConfig({ provider: "local" });
+    const result = await recorder.recordDecision({
+      agentId: "agent-01",
+      planHash: `0x${"1".repeat(64)}`,
+      reportHash: `0x${"2".repeat(64)}`,
+      decision: "WARN"
+    });
 
-  it("exports the registry ABI", () => {
-    expect(
-      AEGIS_PROOF_REGISTRY_ABI.some(
-        (entry) => "name" in entry && entry.name === "recordDecision"
-      )
-    ).toBe(true);
+    expect(result.provider).toBe("local");
   });
 });

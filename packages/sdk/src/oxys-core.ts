@@ -2,10 +2,9 @@ import { ContextClient } from "./context.js";
 import { MemoryClient } from "./memory.js";
 import { ProfileClient } from "./profile.js";
 import { InMemoryStorage, JsonFileStorage, type MemoryStorage } from "./storage.js";
-import { ZeroGStorageAdapter } from "./storage-0g.js";
-import type { BitMemConfig } from "./types.js";
+import type { OxysConfig } from "./types.js";
 
-export class BitMemCore {
+export class OxysCore {
   readonly memory: MemoryClient;
   readonly context: ContextClient;
   readonly profile: ProfileClient;
@@ -18,25 +17,11 @@ export class BitMemCore {
 }
 
 export function createStorageFromConfig(
-  storage: BitMemConfig["storage"] = { provider: "local" }
+  storage: OxysConfig["storage"] = { provider: "local" }
 ): MemoryStorage {
   if (storage.provider === "file") {
     return new JsonFileStorage(storage.path);
   }
 
-  if (storage.provider !== "0g") {
-    return new InMemoryStorage();
-  }
-
-  if (!storage.indexerRpc || !storage.evmRpc || !storage.privateKey) {
-    throw new Error(
-      "0G storage requires indexerRpc, evmRpc, and privateKey in storage config."
-    );
-  }
-
-  return new ZeroGStorageAdapter({
-    indexerRpc: storage.indexerRpc,
-    evmRpc: storage.evmRpc,
-    privateKey: storage.privateKey
-  });
+  return new InMemoryStorage();
 }
