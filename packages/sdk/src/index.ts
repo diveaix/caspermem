@@ -6,7 +6,11 @@ export {
   createBitgetMcpCodexConfig,
   defaultBitgetFuturesPolicy
 } from "./bitget.js";
-export { CasperAgentInfraClient, defaultCasperAgentPolicy } from "./casper.js";
+export {
+  CasperAgentInfraClient,
+  createCasperX402QuoteFromHeaders,
+  defaultCasperAgentPolicy
+} from "./casper.js";
 export {
   LocalComputeClient,
   ZeroGComputeClient,
@@ -52,8 +56,17 @@ export type {
   CasperAgentActionVerdict,
   CasperAgentGuardrailPolicy,
   CasperAgentGuardrailPolicyInput,
+  CasperAiToolkitSurface,
+  CasperContractWorkflowInput,
+  CasperContractWorkflowStage,
   CasperMcpObservationInput,
   CasperMcpRisk,
+  CasperStreamingEventInput,
+  CasperStreamingEventType,
+  CasperToolkitProfileInput,
+  CasperX402HeadersInput,
+  CasperX402PaymentAttemptInput,
+  CasperX402PaymentStatus,
   CasperX402QuoteInput
 } from "./casper.js";
 export type {
