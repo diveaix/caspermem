@@ -2235,7 +2235,7 @@ function mapApiMemory(memory: ApiMemoryRecord, index: number, total = 1): Memory
   const content = memory.content ?? {};
   const agent = agentOptions.find((x) => x.id === memory.agentId);
   const agentName = typeof content.agentName === "string" ? content.agentName : agent?.name ?? memory.agentId;
-  const source = isMemorySource(content.source) ? content.source : "API";
+  const source = normalizeMemorySource(content.source);
   const detail = typeof content.note === "string"
     ? content.note
     : typeof content.detail === "string"
@@ -2246,7 +2246,7 @@ function mapApiMemory(memory: ApiMemoryRecord, index: number, total = 1): Memory
   const pos = nextBubblePosition(index, total);
   return {
     id: memory.id, kind: memory.kind, title: memory.title, detail, agentId: memory.agentId, agentName, source,
-    from: source === "Manual" ? "POST /memory" : source === "MCP" ? "MCP memory tool" : "GET /memory",
+    from: memorySourceLabel(source, content.source),
     age: memory.createdAt ? "synced" : "saved",
     size: Math.min(112, Math.max(86, 76 + memory.title.length * 0.45)), x: pos.x, y: pos.y, confidence: 90,
     tags: memory.tags?.length ? memory.tags.slice(0, 5) : [source.toLowerCase()], linked: [], status: "synced"
@@ -2260,6 +2260,20 @@ function isApiMemoryRecord(value: unknown): value is ApiMemoryRecord {
 
 function isMemorySource(value: unknown): value is MemorySource {
   return typeof value === "string" && value in sourceMeta;
+}
+
+function normalizeMemorySource(value: unknown): MemorySource {
+  if (isMemorySource(value)) return value;
+  if (value === "cspr-trade-mcp" || value === "cspr-cloud-rest") return "MCP";
+  return "API";
+}
+
+function memorySourceLabel(source: MemorySource, rawSource: unknown) {
+  if (source === "Manual") return "POST /memory";
+  if (rawSource === "cspr-trade-mcp") return "CSPR.trade MCP tool";
+  if (rawSource === "cspr-cloud-rest") return "CSPR.cloud MCP tool";
+  if (source === "MCP") return "MCP memory tool";
+  return "GET /memory";
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
