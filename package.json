@@ -28,6 +28,7 @@
     "example:review-file": "tsx packages/sdk/examples/review-plan-file.ts packages/sdk/examples/fixtures/risky-plan.json",
     "example:outcome": "tsx packages/sdk/examples/record-outcome.ts",
     "example:flow": "tsx packages/sdk/examples/demo-flow.ts",
+    "example:casper": "tsx packages/sdk/examples/casper-agent-demo.ts",
     "example:bitget": "tsx packages/sdk/examples/bitget-infra-demo.ts"
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 import { LearningClient } from "./learning.js";
 import { AegisModule } from "./aegis.js";
 import { BitgetInfraClient } from "./bitget.js";
+import { CasperAgentInfraClient } from "./casper.js";
 import { createComputeFromConfig } from "./compute.js";
 import type { ComputeClient } from "./compute.js";
 import { createStorageFromConfig, BitMemCore } from "./bitmem.js";
@@ -24,6 +25,7 @@ export class BitMem {
   readonly learning: LearningClient;
   readonly proofs: ProofsClient;
   readonly bitget: BitgetInfraClient;
+  readonly casper: CasperAgentInfraClient;
   private readonly compute: ComputeClient;
 
   constructor(
@@ -46,5 +48,6 @@ export class BitMem {
     this.learning = new LearningClient(this.memory, this.compute);
     this.proofs = new ProofsClient(createProofRecorderFromConfig(config.chain));
     this.bitget = new BitgetInfraClient(this.memory);
+    this.casper = new CasperAgentInfraClient(this.memory);
   }
 }
