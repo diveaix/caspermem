@@ -6,7 +6,6 @@ export {
   createBitgetMcpCodexConfig,
   defaultBitgetFuturesPolicy
 } from "./bitget.js";
-export { CasperAgentInfraClient, defaultCasperAgentPolicy } from "./casper.js";
 export {
   LocalComputeClient,
   ZeroGComputeClient,
@@ -45,17 +44,6 @@ export type {
   BitgetToolObservationInput,
   BitgetToolRisk
 } from "./bitget.js";
-export type {
-  CasperAgentActionReviewInput,
-  CasperAgentActionSurface,
-  CasperAgentActionType,
-  CasperAgentActionVerdict,
-  CasperAgentGuardrailPolicy,
-  CasperAgentGuardrailPolicyInput,
-  CasperMcpObservationInput,
-  CasperMcpRisk,
-  CasperX402QuoteInput
-} from "./casper.js";
 export type {
   ContextResult,
   AgentProfile,

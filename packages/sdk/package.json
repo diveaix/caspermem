@@ -17,10 +17,6 @@
       "types": "./dist/aegis.d.ts",
       "import": "./dist/aegis.js"
     },
-    "./casper": {
-      "types": "./dist/casper.d.ts",
-      "import": "./dist/casper.js"
-    },
     "./compute": {
       "types": "./dist/compute.d.ts",
       "import": "./dist/compute.js"

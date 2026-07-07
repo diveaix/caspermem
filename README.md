@@ -8,22 +8,6 @@ Built for the 0G hackathon.
 
 ![BIT/MEM memory map](packages/web/public/assets/minimal-memory-map.png)
 
-## Casper Agentic Buildathon Reframe
-
-BIT/MEM can also be submitted to the Casper Agentic Buildathon as a memory-backed guardrail and audit layer for Casper agents using x402 payments, MCP tools, CSPR.trade-style DeFi actions, and agent-built workflows.
-
-The Casper adapter adds `sdk.casper` for x402 quote memory, MCP tool-call memory, agent spend policies, and pre-action reviews that return `ALLOW`, `WARN`, `BLOCK`, or `REQUIRE_HUMAN`.
-
-Start with:
-
-```bash
-npm run example:casper
-```
-
-Submission notes:
-
-- `CASPER_SUBMISSION.md`
-
 ## Bitget AI Hackathon Add-On
 
 This repo now includes a Bitget AI Trading Infrastructure adapter for the same product.
@@ -204,7 +188,6 @@ BIT/MEM Learning + Proofs
 | `trades` | Record executed, failed, reverted, or skipped outcomes |
 | `learning` | Reflect on failures and store lessons |
 | `proofs` | Generate local proofs or anchor decisions on 0G Chain |
-| `casper` | Store Casper x402/MCP observations and review proposed agent actions |
 | `bitget` | Ingest Bitget Agent Hub observations and review proposed Bitget futures orders |
 | `BitMemApiClient` | Use the hosted/local API through agent API keys |
 | `mcp` | Expose BIT/MEM as tools to LLM agents |
@@ -526,7 +509,6 @@ npm run example:review
 npm run example:review-file
 npm run example:outcome
 npm run example:flow
-npm run example:casper
 npm run example:bitget
 npm run api:smoke
 ```
@@ -543,15 +525,6 @@ Demo story:
 8. Anchor proof on 0G Chain when chain credentials are configured.
 9. Record outcome.
 10. Reflect on failure and store a future lesson.
-
-Casper demo story:
-
-1. Create guardrails for a Casper agent using x402 and MCP tools.
-2. Store a Casper x402 payment quote as protocol memory.
-3. Store a CSPR.trade-style MCP tool observation.
-4. Review a proposed x402 payment against spend and quote-age policy.
-5. Review a proposed Casper DeFi write and require human confirmation.
-6. Store each decision as future memory for audit and replay.
 
 Bitget demo story:
 
@@ -613,7 +586,6 @@ packages/
 - Aegis risk review
 - deterministic ERC20 calldata checks
 - failure reflection
-- Casper x402/MCP guardrail adapter
 - local/file storage
 - optional 0G Storage adapter
 - 0G Compute Router client
@@ -633,7 +605,6 @@ packages/
 ## Hackathon Docs
 
 - `SUBMISSION.md`: judge-facing summary
-- `CASPER_SUBMISSION.md`: Casper Agentic Buildathon framing
 - `DEMO.md`: demo script
 - `docs/AGENT_CONNECTIONS.md`: SDK, REST, and MCP integration guide
 - `docs/LIVE_0G_CHECKLIST.md`: live credential checklist
